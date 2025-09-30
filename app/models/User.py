@@ -3,11 +3,17 @@ from pydantic import BaseModel
 from typing import Optional
 
 
-class user(BaseModel):
+class UserCreation(BaseModel):
     reg_no: int  #offical reg no
     passwd: str  #passwd 
-    acc_created: datetime  #day and time of reg
     email: Optional[str]=None #official email (optional)
+    
+class UserResponse(BaseModel):
+    reg_no:int
+    email: Optional[str]=None
+    acc_created: datetime
+    mssg:str
+    
     
 
     

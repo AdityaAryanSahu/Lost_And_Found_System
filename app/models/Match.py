@@ -1,4 +1,5 @@
 from pydantic import BaseModel
 
-class match(BaseModel):
+class MatchResponse(BaseModel):
     item_id: int
+    mssg:str
