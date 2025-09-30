@@ -8,7 +8,6 @@ class ItemCreation(BaseModel):
     desc: str #colour and place 
     img: image  #image for the item
     type: str #type like bottle, pen etc
-    item_id: int #each reg item has random id
     
 class ItemResponse(BaseModel):
     item_id:int
@@ -16,4 +15,5 @@ class ItemResponse(BaseModel):
     
 class ItemList(BaseModel):
     item_list=List[ItemResponse]=[]
+
     count:int
