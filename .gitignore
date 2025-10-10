@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+app/chatbot/
+*.log
+nlu.json
+*.rasa
+app/se_proj/
+app/rasa_env/
+
