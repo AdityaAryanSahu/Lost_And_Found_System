@@ -1,6 +1,17 @@
-from pydantic import BaseModel
-from typing import List
-from app.schemas.item import ItemResponse
+from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import List, Optional, Dict, Any
+from app.models.item import ItemResponse
+
+class MatchModel(BaseModel):
+    id: Optional[str] = Field(None, alias="_id")
+    item_id_a: str                             
+    item_id_b: str                             
+    score: float
+    matched_at: datetime
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return self.model_dump(by_alias=True, exclude_none=True)
 
 class MatchSearchRequest(BaseModel):
     search_type: str  

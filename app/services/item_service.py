@@ -1,15 +1,19 @@
-from app.models.item import ItemCreation, ItemResponse, ItemList
+from app.models.item import ItemCreation, ItemResponse, ItemList, ItemModel
 from app.services.image_service import ImageService
-from fastapi import status, UploadFile
-from typing import Optional, List
+from fastapi import status, UploadFile, Depends
+from typing import Optional, List, Annotated
+from app.repositories import image_repository
 from datetime import datetime
 import uuid
 
 
 class ItemService:
     
-    def __init__(self):
-        self.image_service=ImageService()
+    def __init__(self, 
+                 image_service: Annotated[ImageService, Depends()],
+                 item_repo: image_repository):
+        self.image_service = image_service
+        self.item_repository = item_repo
         
         
     async def create_item(self, item_cr: ItemCreation, image_files: List[UploadFile]) -> Optional[ItemResponse]:
@@ -21,49 +25,42 @@ class ItemService:
 
             image_meta = await self.image_service.process_and_upload_image(file, item_id=id)
             image_metadata_list.append(image_meta)
+        item_model = item_cr.to_model(item_id=id, image_metadata=image_metadata_list, created_at=datetime.now())
         
-        item_bd= ItemResponse(
-            user_id=item_cr.user_id,
-            item_id=id,
-            desc=item_cr.desc,
-            img=image_metadata_list,
-            type= item_cr.type,
-            created_at=datetime.now(), 
-            status=status.HTTP_201_CREATED,
-            mssg="item created"
-        )
+        await self.item_repository.create_item(item_model)
         
-        #push to database
-        
-        return item_bd
+        return ItemResponse.from_model(item_model)
 
     async def get_all_items(self, limit: int = 10, offset: int = 0) -> ItemList:
-        #get all items, create the response models and push to list
-        item_list=ItemList()
-        return item_list
+        item_models_list = await self.item_repository.list_items(limit, offset)
+        items = [ItemResponse.from_model(ItemModel(**m)) for m in item_models_list]
+        return ItemList(items=items, count=len(items))
     
     async def get_item_id(self, item_id:str)-> Optional[ItemResponse]:
-        #check if item_id present in database, if not riase exception
-        #if found create a response model item_got
-        item_got=ItemResponse()
-        return item_got
+        item_doc = await self.item_repository.get_item_by_id(item_id)
+        if item_doc:
+            item_model = ItemModel(**item_doc)
+            return ItemResponse.from_model(item_model)
+        return None
     
     async def delete_item(self, item_id:str)->bool:
-        #search in database and delete
-        #if not found return false else return true
-        return False
+        result = await self.item_repository.delete_item(item_id)
+        return result.deleted_count > 0
         
     async def update_item(self, item_id:str, item_update: ItemCreation) -> Optional[ItemResponse]:
         
-        #using data of item_update, for a particualr item_id update value in database
-        return item_update
+        update_data = item_update.model_dump(exclude_unset=True)
+       
+        update_result = await self.item_repository.update_item_fields(item_id, update_data)
+     
+        if update_result and update_result.modified_count > 0:
+
+            return await self.get_item_id(item_id)
+        
+  
+        return await self.get_item_id(item_id)
     
     async def mark_item_claimed(self, item_id: str) -> bool:
 
-        #get item from db as existing_item= db.get(itemm_id)
-        if not existing_item:
-            return False
-        
-        # Simple mock update
-        existing_item.is_claimed = True
-        return True
+        result = await self.item_repository.update_claim_status(item_id, is_claimed=True)
+        return result.modified_count > 0

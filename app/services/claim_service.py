@@ -1,17 +1,28 @@
-from typing import Optional, List
+from typing import Optional, List, Annotated, Dict
 from datetime import datetime
-from app.models.claim import ClaimCreation, ClaimResponse
+from app.models.claim import ClaimCreation, ClaimResponse, ClaimModel 
+from app.models.user import UserResponse, UserModel
 from app.services.item_service import ItemService
+from app.services.noti_service import NotificationService 
+from app.repositories import user_repository, claim_repository
+from fastapi import Depends, HTTPException, status
 import uuid
 
 
 class ClaimService:
-    def __init__(self):
-        self.item_serv=ItemService()
+    def __init__(self,
+                 item_service: Annotated[ItemService, Depends()],
+                 noti_service: Annotated[NotificationService, Depends()],
+                 claim_repo: claim_repository,
+                 user_repo: user_repository): # For fetching claimant data
+        self.item_service = item_service
+        self.notification_service = noti_service
+        self.claim_repository = claim_repo
+        self.user_repository = user_repo
         
     async def claim_submit(self, claim_data: ClaimCreation, user_id: str) -> Optional[ClaimResponse]:
         
-        item=await self.item_serv.get_item_id(claim_data.item_id)
+        item=await self.item_service.get_item_id(claim_data.item_id)
         
         if item is None:
             return ClaimResponse(
@@ -28,59 +39,58 @@ class ClaimService:
             )
         
         new_claim_id = str(uuid.uuid4())
-        claim_res=ClaimResponse(
-            item_id=claim_data.item_id, user_id=user_id, claim_id=new_claim_id,
-                 mssg="Successfully submitted", status="PENDING",
-                 submitted_at=datetime.now()
-        )
-        
-        #store in database
-        
-        return claim_res
+        claim_model = claim_data.to_model(claim_id=new_claim_id, submitted_at=datetime.now())
+        claim_model.user_id = user_id
+        await self.claim_repository.create_claim(claim_model)
+        claimant_doc = await self.user_repository.get_user_by_id(user_id)
+        if claimant_doc:
+             claimant = UserResponse.from_model(UserModel(**claimant_doc))
+             await self.notification_service.notify_item_poster_of_claim(item=item, claimant=claimant)
+      
+        return ClaimResponse.from_model(claim_model)
     
     async def get_claims_item_id(self, item_id:str) -> List[ClaimResponse]:
-        #get all claims for item_id and create a response body for each
-        #pu them in a list and return them
-        return List[]
+        claim_docs = await self.claim_repository.get_claims_for_item(item_id)
+        claims = [ClaimResponse.from_model(ClaimModel(**doc)) for doc in claim_docs]
+        return claims
     
-    async def review_claim(self, claim_id: str, current_user_id: int, action: str) -> ClaimResponse:
+    async def review_claim(self, claim_id: str, current_user_id: str, action: str) -> ClaimResponse:
         
-        #get the claim data and make a claim body
-        #claim=db.get(claim_id)
+        claim_doc = await self.claim_repository.get_claim_by_id(claim_id)
         
-        if not claim:
-            return ClaimResponse(
-               claim_id=claim_id, item_id="", user_id=current_user_id,
-                status="FAILED", mssg="Claim not found"
-            )
-        item = await self.item_serv.get_item_id(claim.item_id)
-        if not item or item.user_id != current_user_id:
-            return ClaimResponse(
-                claim_id=claim_id, item_id=claim.item_id, user_id=current_user_id,
-                status="FAILED", mssg="Not authorized to manage this claim."
-            )
-        if claim.status != "PENDING":
-             return ClaimResponse(
-                claim_id=claim_id, item_id=claim.item_id, user_id=current_user_id,
-                status="FAILED", mssg=f"Claim is already {claim.status}."
-            )
+        if not claim_doc:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Claim not found.")
             
-        if action.upper() == "APPROVE":
-            await self.item_service.mark_item_claimed(claim.item_id)
-            claim.status = "APPROVED"
-            claim.mssg = "Claim approved and item marked as claimed."
+        claim_model = ClaimModel(**claim_doc)
+        item_res = await self.item_service.get_item_id(claim_model.item_id)
+        if not item_res or item_res.user_id != current_user_id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to review this claim.")
             
-        elif action.upper() == "REJECT":
-            claim.status = "REJECTED"
-            claim.mssg = "Claim rejected."
+       
+        if claim_model.status != "PENDING":
+             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Claim is already {claim_model.status}.")
             
-        else:
-            return ClaimResponse(
-                claim_id=claim_id, item_id=claim.item_id, user_id=current_user_id,
-                status="FAILED", mssg="Invalid action."
-            )
+    
+        action = action.upper()
+        if action not in ["APPROVE", "REJECT"]:
+             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid action.")
             
-        return claim
+        update_data = {"status": action, "mssg": f"Claim {action.lower()}."}
+        
+        if action == "APPROVE":
+            await self.item_service.mark_item_claimed(claim_model.item_id)
+            
+       
+        await self.claim_repository.update_claim_fields(claim_id, update_data)
+        
+        
+        claimant_doc = await self.user_repository.get_user_by_id(claim_model.user_id)
+        if claimant_doc:
+            claimant = UserResponse.from_model(UserModel(**claimant_doc))
+            await self.notification_service.notify_claimant_of_decision(claimant, item_res, action)
+            
+    
+        return await self.get_claim_by_id(claim_id)
     
     
         

@@ -1,19 +1,24 @@
-from typing import Dict, Optional, List
+from typing import List, Annotated
+from app.models.match import MatchSearchRequest, MatchResponse, MatchList, MatchModel 
+from app.models.item import ItemResponse
+from app.services.item_service import ItemService 
+from app.repositories import match_repository
+from fastapi import Depends
 from datetime import datetime
-from app.models.match import MatchList, MatchResponse, MatchSearchRequest
-from app.models.item import ItemCreation, ItemList, ItemResponse
-from fastapi import status, HTTPException
-from app.services.item_service import ItemService
 
 
 class MatchService:
     
-    def __init__(self):
-        self.item_serv=ItemService()
+    def __init__(self,
+                 item_service: Annotated[ItemService, Depends()],
+                 match_repo: match_repository):
+        self.item_service = item_service
+        self.match_repository = match_repo
         
     async def find_potential_matches(self, search_request: MatchSearchRequest) -> MatchList:
         
-        all_items = await self.item_serv.get_all_items() 
+        all_items_list = await self.item_service.get_all_items(limit=1000, offset=0)
+        all_items = all_items_list.items 
         potential_matches: List[MatchResponse] = []
 
         search_keywords = {k.lower() for k in search_request.keywords}

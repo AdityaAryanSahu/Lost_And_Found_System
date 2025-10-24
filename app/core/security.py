@@ -8,7 +8,7 @@ SECRET_KEY = "b6718f5b621697e4b10ed7c6187bca24"  # Use a strong, environment-loa
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 pswd_context=CryptContext(
-    schemes=['bycrypt']
+    schemes=['bcrypt']
 )
 
 def gen_pswd_hash(pswd:str) -> str:
@@ -21,7 +21,7 @@ def verify_pswd(pswd:str, hash:str) -> bool:
 def create_access_token(user_data: dict, expiry:timedelta= None, refresh:bool= False):
     payload={}
     payload['sub']=str(user_data['user_id'])
-    payload['exp']=datetime.now() + (expiry if expiry is not None else timedelta(minutes==ACCESS_TOKEN_EXPIRE_MINUTES))
+    payload['exp']=datetime.now() + (expiry if expiry is not None else timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     payload['jti']=str(uuid.uuid4())
     payload['refresh']=refresh
     

@@ -1,6 +1,5 @@
 from fastapi import FastAPI,HTTPException
 from app.api.router import api_router
-from app.core.logging import setup_logging
 from contextlib import asynccontextmanager
 # from .database import create_db_and_tables
 

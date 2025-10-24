@@ -1,18 +1,24 @@
-# app/services/image_service.py
+
 import uuid
 import tempfile
 from datetime import datetime
 import os
-from typing import List, Optional
-from fastapi import UploadFile
+from typing import List, Optional, Annotated
+from fastapi import UploadFile, Depends
 from app.core.storage import get_storage_client, StorageClient
 from app.utils.image_processing import img_proc 
-from app.models.image import Image
+from app.repositories import image_repository
+from app.models.image import Image, ImageModel
+
+
 
 class ImageService:
     
-    def __init__(self):
-        self.storage_client = get_storage_client()
+    def __init__(self, 
+                 storage_client: Annotated[StorageClient, Depends(get_storage_client)],
+                 image_repo: image_repository):
+        self.storage_client = storage_client
+        self.image_repository = image_repo
 
     async def process_and_upload_image(self, file: UploadFile, item_id: str) -> Image:
        
@@ -39,22 +45,27 @@ class ImageService:
                 file_id=file_id,
                 file_content=processed_content
             )
+            image_dto = Image(
+            item_id=item_id,
+            url=file_url,
+            date_uploaded=datetime.now()
+        )
             
-            return Image(
-                item_id=item_id,
-                url=file_url,
-                date_uploaded=datetime.now()
-            )
-            
+            image_model = image_dto.to_model()
+            await self.image_repository.add_image(image_model)
+        
         finally:
             os.unlink(temp_path)
+            
+        return image_dto
+            
+       
 
     async def delete_image(self, url: str) -> bool:
-        """Deletes an image based on its URL (mocks parsing the URL)."""
-        # Mock URL parsing: 'http://minio.local/bucket_name/file_id'
         parts = url.split('/')
-        if len(parts) >= 4:
-            bucket_name = parts[-2]
-            file_id = parts[-1]
-            return await self.storage_client.delete_file(bucket_name, file_id)
-        return False
+        bucket_name = parts[-2]
+        file_id = parts[-1]
+        storage_success = await self.storage_client.delete_file(bucket_name, file_id)
+        repo_success = await self.image_repository.delete_image(url)
+        
+        return storage_success and repo_success

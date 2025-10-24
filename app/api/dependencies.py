@@ -9,9 +9,38 @@ from app.services.match_service import MatchService
 from app.services.claim_service import ClaimService
 from app.services.image_service import ImageService
 from app.services.user_service import UserService
+from app.services.message_service import MessageService
+from app.repositories.auth_repository import AuthRepo
+from app.repositories.claim_repository import ClaimRepo
+from app.repositories.image_repository import ImageRepo
+from app.repositories.item_repository import ItemRepo
+from app.repositories.match_repository import MatchRepo
+from app.repositories.user_repository import UserRepo
+from app.repositories.message_repository import MessageRepository
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
+def get_auth_repo():
+    return AuthRepo()
+
+def get_claim_repo():
+    return ClaimRepo()
+
+def get_item_repo():
+    return ItemRepo()
+
+def get_image_repo():
+    return ImageRepo()
+
+def get_match_repo():
+    return MatchRepo()
+
+def get_user_repo():
+    return UserRepo()
+
+def get_message_repo():
+    return MessageRepository()
 
 def get_auth_service():
     return AuthService()
@@ -31,7 +60,11 @@ def get_image_service():
 def get_user_service():
     return UserService()
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> UserResponse:
+def get_message_service():
+    return MessageService()
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], 
+                           user_service: Annotated[UserService, Depends(get_user_service)]) -> UserResponse:
     
     # Decodes the JWT token from the 'Bearer' header and returns the authenticated UserResponse.
     
@@ -52,10 +85,10 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> Use
         if user_id is None:
             raise credentials_exception
 
-    # get user data from db: user_entry = db.get(user_id)
+        user_entry = await user_service.get_user_by_id(user_id)
     
         if user_entry is None:
             raise credentials_exception
     
-        return user_entry["data"] 
+        return user_entry 
 

@@ -6,7 +6,7 @@ from app.services.claim_service import ClaimService
 from app.api.dependencies import get_claim_service, get_current_user
 
 
-claim_router=FastAPI()
+claim_router=APIRouter()
 
 @claim_router.post("/", response_model=ClaimResponse)
 async def submit_claim(

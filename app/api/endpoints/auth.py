@@ -17,7 +17,7 @@ async def register(user_in: UserCreation, service: Annotated[AuthService, Depend
     return new_user
 
 @auth_router.post("/login", response_model=LoginResponse)
-async def login(user_in:LoginRequest, service= Annotated[AuthService, Depends(get_auth_service)]):
+async def login(user_in:LoginRequest, service: Annotated[AuthService, Depends(get_auth_service)]):
     verification = await service.verify_user(user_in)
     if verification.status != status.HTTP_200_OK :
         raise HTTPException(status_code=verification.status, detail=verification.mssg)
