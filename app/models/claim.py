@@ -1,8 +1,9 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field,ConfigDict
 from datetime import datetime
 from typing import Optional, Any, Dict
 
 class ClaimModel(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
     id: Optional[str] = Field(None, alias="_id")
     
     claim_id: str

@@ -1,10 +1,11 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List
 from .  image import Image
 from typing import Optional, Dict, Any
 from datetime import datetime
 
 class ItemModel(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
     id: Optional[str] = Field(None, alias="_id")
     
     item_id: str
@@ -41,15 +42,15 @@ class ItemResponse(BaseModel):
     is_claimed: bool= False
     type: str
     created_at: Optional[datetime] = None
-    status: int
-    mssg:str
+    status: Optional[int]
+    mssg:Optional[str]
     @classmethod
     def from_model(cls, item_model: ItemModel) -> 'ItemResponse':
         return cls(
             item_id=item_model.item_id,
             user_id=item_model.user_id,
             desc=item_model.desc,
-            images=item_model.images,
+            img=item_model.images,  # ✅ Changed from "images" to "img"
             type=item_model.type,
             is_claimed=item_model.is_claimed,
             created_at=item_model.created_at,

@@ -1,0 +1,67 @@
+services:
+
+  # 1. FastAPI Application Service
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: lost_and_found_app
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      # Override or add specific values (service names for Docker networking)
+      MONGO_URI: mongodb://db:27017/Lost_and_Found
+      MINIO_ENDPOINT: minio:9000
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # 2. MongoDB Database Service
+  db:
+    image: mongo:5.0
+    container_name: mongodb_lf_db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: Lost_and_Found
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # 3. MinIO Object Storage Service
+  minio:
+    image: minio/minio:latest
+    container_name: minio_storage
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    env_file:
+      - .env
+    environment:
+      MINIO_SERVER_URL: http://minio:9000
+    volumes:
+      - minio_storage_data:/data
+    command: server /data --console-address :9001
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  mongodb_data: {}
+  minio_storage_data: {}

@@ -1,9 +1,10 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 from app.models.item import ItemResponse
 
 class MatchModel(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
     id: Optional[str] = Field(None, alias="_id")
     item_id_a: str                             
     item_id_b: str                             

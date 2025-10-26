@@ -1,0 +1,62 @@
+.claim-form-wrapper {
+  /* Dark form wrapper background */
+  background: #1f1f1f;
+  padding: 20px;
+  border-radius: 8px;
+  /* Gold border */
+  border: 2px solid #D4AF37;
+  margin: 20px 0;
+}
+
+.claim-form-wrapper h3 {
+  /* Gold heading */
+  color: #D4AF37;
+  margin-bottom: 10px;
+}
+
+.claim-form-wrapper p {
+  color: #B8B8B8;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.claim-form-wrapper form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.claim-form-wrapper textarea {
+  padding: 12px;
+  /* Dark textarea styles */
+  border: 1px solid #555;
+  background: #333333;
+  color: #CCCCCC;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.claim-form-wrapper textarea:focus {
+  outline: none;
+  /* Gold focus border and shadow */
+  border-color: #D4AF37;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+}
+
+.claim-form-wrapper button {
+  padding: 12px;
+  /* Gold button */
+  background: #D4AF37;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.claim-form-wrapper button:hover {
+  /* Darker gold on hover */
+  background: #B8941F;
+}

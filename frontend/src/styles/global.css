@@ -1,0 +1,55 @@
+/* src/styles/global.css */
+:root {
+    --primary-color: #007bff; /* College blue */
+    --secondary-color: #6c757d; /* Gray */
+    --success-color: #28a745;
+    --claimed-color: #dc3545; /* Red for claimed items */
+    --bg-color: #f8f9fa;
+    --text-color: #333;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Base button styling */
+button, .upload-btn, .logout-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+/* Primary buttons */
+button:not(.logout-btn) {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+button:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+/* Layout classes */
+.main-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Link styling */
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+}

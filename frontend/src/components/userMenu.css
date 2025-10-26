@@ -1,0 +1,87 @@
+/* src/components/userMenu.css */
+.user-menu-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  width: 280px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.user-menu-header {
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-menu-header h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.user-menu-header p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.user-menu-items {
+  padding: 8px 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  width: 100%;
+  text-decoration: none;
+  color: #374151;
+  font-size: 15px;
+  transition: all 0.2s;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.menu-item:hover {
+  background: #f3f4f6;
+  color: #2563eb;
+}
+
+.menu-icon {
+  font-size: 20px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-btn {
+  border-top: 1px solid #e5e7eb;
+  margin-top: 8px;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* Close overlay when clicking outside */
+.user-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background: transparent;
+}

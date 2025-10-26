@@ -1,0 +1,773 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.item-listing-page {
+    /* Changed from #f5f5f5 to dark background */
+    background: #0a0a0a;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #CCCCCC; /* Default text color set to light gray */
+}
+
+/* Header */
+.header {
+    /* Changed from #232f3e to a darker, subtle shade */
+    background: #1A1A1A;
+    color: white;
+    padding: 15px 20px;
+    /* Darkened shadow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    sticky: top;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    max-width: 1400px;
+    margin: 0 auto 15px;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    /* Changed from #ff9900 to gold */
+    color: #D4AF37;
+    /* Added subtle glow */
+    text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.post-btn {
+    /* Changed from #ff9900 to gold button */
+    background: #D4AF37;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.post-btn:hover {
+    /* Darker gold on hover */
+    background: #B8941F;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Adjusted border color */
+    border-left: 1px solid #444;
+    padding-left: 15px;
+}
+
+.user-name {
+    font-size: 14px;
+    color: #999;
+}
+
+.profile-btn, .messages-btn, .logout-btn {
+    background: transparent;
+    color: #CCCCCC; /* White/light gray */
+    /* Gold border */
+    border: 1px solid #D4AF37;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.profile-btn:hover, .messages-btn:hover, .logout-btn:hover {
+    /* Gold fill on hover */
+    background: #D4AF37;
+    color: black;
+    border-color: #D4AF37;
+}
+
+/* Search Section */
+.search-section {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    /* Changed search bar background */
+    background: #333333;
+    color: white;
+}
+
+.search-bar:focus {
+    outline: none;
+    /* Gold focus glow */
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.5);
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    /* Dark sidebar background */
+    background: #1f1f1f;
+    padding: 20px;
+    border-radius: 4px;
+    /* Darkened shadow */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    height: fit-content;
+    position: sticky;
+    top: 200px;
+}
+
+.sidebar h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    /* Gold text */
+    color: #D4AF37;
+    /* Gold border */
+    border-bottom: 2px solid #D4AF37;
+    padding-bottom: 10px;
+}
+
+.filter-group {
+    margin-bottom: 20px;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    /* Light gray text for labels */
+    color: #CCCCCC;
+    font-size: 14px;
+}
+
+.filter-group select,
+.filter-group input[type="checkbox"],
+.filter-group input[type="date"] {
+    width: 100%;
+    padding: 8px;
+    /* Dark input border and background */
+    border: 1px solid #555;
+    background: #333333;
+    color: #CCCCCC;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.filter-group select {
+    cursor: pointer;
+}
+
+.filter-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 8px;
+}
+
+.refresh-btn {
+    width: 100%;
+    /* Gold button */
+    background: #D4AF37;
+    color: black;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.refresh-btn:hover {
+    /* Darker gold on hover */
+    background: #B8941F;
+    color: black;
+}
+
+/* Items Section */
+.items-section {
+    flex: 1;
+}
+
+.items-section h2 {
+    margin-bottom: 20px;
+    /* Gold section title */
+    color: #D4AF37;
+}
+
+.loading, .error, .no-items {
+    text-align: center;
+    padding: 40px;
+    /* Dark card background */
+    background: #1f1f1f;
+    border-radius: 4px;
+}
+
+.error {
+    /* Error colors remain for accessibility/meaning */
+    color: #d32f2f;
+    background: #440000;
+}
+
+.no-items {
+    color: #999;
+}
+
+/* Items Grid */
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.item-card {
+    /* Dark card background */
+    background: #1f1f1f;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+    /* Darkened shadow */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    /* Dark border */
+    border: 1px solid #333;
+}
+
+.item-card:hover {
+    /* Darkened shadow and gold border on hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    transform: translateY(-2px);
+    border-color: #D4AF37;
+}
+
+/* Item Image */
+.item-image {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    /* Dark image placeholder */
+    background: #333333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.placeholder {
+    color: #666;
+    font-size: 32px;
+}
+
+.item-type-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+}
+
+/* Badges keep their distinct colors */
+.item-type-badge.lost {
+    background: #d32f2f;
+}
+
+.item-type-badge.found {
+    background: #388e3c;
+}
+
+.claimed-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    /* Gold badge */
+    background: #D4AF37;
+    color: black;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Item Info */
+.item-info {
+    padding: 12px;
+}
+
+.item-info h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+    /* Light text for item title */
+    color: #CCCCCC;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.item-location,
+.item-date,
+.item-status {
+    font-size: 13px;
+    /* Light gray text */
+    color: #999;
+    margin-bottom: 6px;
+}
+
+.item-status {
+    font-weight: 600;
+    /* Status colors remain for meaning */
+    color: #388e3c;
+}
+
+.item-status:has(text-error) {
+    color: #d32f2f;
+}
+
+/* Item Footer */
+.item-footer {
+    padding: 8px 12px;
+    /* Dark footer background */
+    background: #232323;
+    /* Dark border */
+    border-top: 1px solid #333;
+    text-align: center;
+    /* Gold footer text */
+    color: #D4AF37;
+    font-size: 12px;
+}
+
+/* Responsive (structure kept, color-dependent elements updated) */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        position: static;
+    }
+
+    .items-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+
+    .header-right {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .user-menu {
+        width: 100%;
+        flex-wrap: wrap;
+        border-left: none;
+        padding-left: 0;
+    }
+}
+
+/* Secondary definitions found in the file, updated to dark theme */
+.item-listing-page {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  min-height: 100vh;
+  background: #0a0a0a; /* Dark background */
+}
+
+.filters-sidebar {
+  width: 280px;
+  background: #1f1f1f; /* Dark card background */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5); /* Dark shadow */
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.filters-header {
+  /* Gold border */
+  border-bottom: 3px solid #D4AF37;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.filters-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #CCCCCC; /* Light text */
+}
+
+.filter-section {
+  margin-bottom: 20px;
+}
+
+.filter-section label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #CCCCCC; /* Light text */
+  font-size: 14px;
+}
+
+.filter-select,
+.search-input,
+.date-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #555; /* Dark input border */
+  background: #333333; /* Dark input background */
+  color: #CCCCCC; /* Light input text */
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: normal !important;
+}
+
+.refresh-btn {
+  width: 100%;
+  padding: 12px;
+  /* Gold button */
+  background: #D4AF37;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.refresh-btn:hover {
+  /* Darker gold on hover */
+  background: #B8941F;
+}
+
+.items-main {
+  flex: 1;
+}
+
+.items-header h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #D4AF37; /* Gold heading */
+}
+
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+/* Item Card Styling */
+.item-card {
+  position: relative;
+  background: #1f1f1f; /* Dark card background */
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5); /* Dark shadow */
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.7); /* Darker shadow on hover */
+}
+
+.item-type-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  /* Replaced generic gradient with a gold gradient for the default badge */
+  background: linear-gradient(135deg, #b8941f 0%, #d4af37 100%);
+  color: black; /* Changed to black text for better contrast on gold */
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.item-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.no-image {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #333333; /* Dark no-image background */
+  color: #666; /* Lighter text for placeholder */
+  font-size: 48px;
+}
+
+/* Center-aligned item details */
+.item-details {
+  padding: 16px;
+  text-align: center; /* Center all text (retained) */
+}
+
+.item-details h3 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #CCCCCC; /* Light title text */
+  text-align: center; /* Center the title (retained) */
+}
+
+.item-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center; /* Center align meta items (retained) */
+}
+
+.item-meta p {
+  margin: 0;
+  font-size: 14px;
+  color: #999; /* Light gray meta text */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the content (retained) */
+  gap: 6px;
+}
+
+.item-description {
+  color: #B8B8B8 !important; /* Lighter description text */
+  font-size: 13px !important;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  max-width: 100%;
+  text-align: center; /* Center the description (retained) */
+}
+
+.status-available {
+  color: #4CAF50 !important; /* Green remains for available */
+  font-weight: 600;
+}
+
+.status-claimed {
+  color: #F44336 !important; /* Red remains for claimed */
+  font-weight: 600;
+}
+
+/* Color variations for different item types - replaced generic gradients with specific ones for a mystic feel */
+.item-card[data-type="Books"] .item-type-badge {
+  background: linear-gradient(135deg, #A77E2A 0%, #D4AF37 100%); /* Gold/Brown */
+}
+
+.item-card[data-type="Electronics"] .item-type-badge {
+  background: linear-gradient(135deg, #1C7ED6 0%, #00f2fe 100%); /* Blue/Cyan (Tech Glow) */
+}
+
+.item-card[data-type="Clothing"] .item-type-badge {
+  background: linear-gradient(135deg, #D32F2F 0%, #FF5722 100%); /* Red/Orange (Warm Tone) */
+}
+
+.item-card[data-type="Keys"] .item-type-badge {
+  background: linear-gradient(135deg, #5D4037 0%, #8D6E63 100%); /* Darker Brown/Bronze */
+}
+
+.item-card[data-type="Others"] .item-type-badge {
+  background: linear-gradient(135deg, #7B1FA2 0%, #9C27B0 100%); /* Purple (Mystic) */
+}
+
+/* App Container */
+.app-container {
+  min-height: 100vh;
+  background: #0a0a0a; /* Dark background */
+}
+
+/* Top Header */
+.top-header {
+  background: #1A1A1A; /* Dark header background */
+  padding: 16px 32px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4); /* Dark shadow */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #D4AF37; /* Gold title */
+  text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+}
+
+.header-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.post-item-btn {
+  /* Changed to gold gradient for primary action button */
+  background: linear-gradient(135deg, #b8941f 0%, #d4af37 100%);
+  color: black;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  /* Gold glow shadow */
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+}
+
+.post-item-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(212, 175, 55, 0.6);
+}
+
+.header-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* User Menu */
+.user-menu {
+  position: relative;
+}
+
+.user-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  /* Changed to gold gradient */
+  background: linear-gradient(135deg, #b8941f 0%, #d4af37 100%);
+  color: black; /* Black on gold */
+  border: none;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.user-avatar:hover {
+  transform: scale(1.1);
+}
+
+.user-dropdown {
+  position: absolute;
+  right: 0;
+  top: 55px;
+  background: #1f1f1f; /* Dark dropdown background */
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5); /* Dark shadow */
+  min-width: 220px;
+  padding: 12px 0;
+  z-index: 1000;
+  border: 1px solid #333; /* Subtle border */
+}
+
+.user-info {
+  padding: 12px 20px;
+}
+
+.user-name {
+  margin: 0;
+  font-weight: 600;
+  font-size: 16px;
+  color: #CCCCCC; /* Light text */
+}
+
+.user-email {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  color: #999; /* Lighter text */
+}
+
+.user-dropdown hr {
+  margin: 8px 0;
+  border: none;
+  border-top: 1px solid #333; /* Dark divider */
+}
+
+.user-dropdown button {
+  width: 100%;
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 14px;
+  color: #CCCCCC; /* Light text */
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-dropdown button:hover {
+  background: #232323; /* Dark hover background */
+}
+
+.logout-btn-dropdown {
+  color: #e74c3c !important; /* Red remains for logout */
+  font-weight: 600;
+}
+
+/* Adjust main content spacing */
+.item-listing-page {
+  padding: 20px 32px;
+}

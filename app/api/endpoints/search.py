@@ -4,13 +4,11 @@ from typing import Annotated
 from app.models.search import SearchRequest
 from app.models.user import UserResponse
 from app.models.item import ItemList
-from app.api.dependencies import get_current_user
+from app.api.dependencies import get_current_user, get_search_service
 from app.services.search_service import SearchService 
 
 search_router = APIRouter()
 
-def get_search_service():
-    return SearchService()
 
 @search_router.post("/", response_model=ItemList)
 async def advanced_search_endpoint(

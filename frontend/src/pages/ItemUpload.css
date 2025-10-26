@@ -1,0 +1,102 @@
+.upload-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  /* Dark form background */
+  background: #1f1f1f;
+  border-radius: 8px;
+  /* Dark shadow */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.upload-container h2 {
+  margin-bottom: 30px;
+  /* Gold heading */
+  color: #D4AF37;
+}
+
+.upload-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.upload-container textarea,
+.upload-container select,
+.upload-container input[type="file"],
+.upload-container input[type="text"],
+.upload-container input[type="date"],
+.upload-container input[type="number"] {
+  padding: 12px;
+  /* Dark input styles */
+  border: 1px solid #555;
+  background: #333333;
+  color: #CCCCCC;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.upload-container textarea:focus,
+.upload-container select:focus,
+.upload-container input[type="file"]:focus,
+.upload-container input[type="text"]:focus,
+.upload-container input[type="date"]:focus,
+.upload-container input[type="number"]:focus {
+  outline: none;
+  /* Gold focus border and shadow */
+  border-color: #D4AF37;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+}
+
+.file-upload-label {
+  font-weight: bold;
+  /* Light label text */
+  color: #CCCCCC;
+}
+
+.upload-container small {
+  color: #999;
+  font-size: 12px;
+}
+
+.error-message {
+  /* Error colors remain */
+  color: #d32f2f;
+  background: #440000;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.upload-container button {
+  padding: 12px;
+  /* Gold button */
+  background: #D4AF37;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.upload-container button:hover:not(:disabled) {
+  /* Darker gold on hover */
+  background: #B8941F;
+}
+
+.upload-container button:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.back-btn {
+  margin-top: 15px;
+  /* Dark button for secondary action */
+  background: #232323;
+  color: #D4AF37; /* Gold text */
+  border: 1px solid #D4AF37;
+}
+
+.back-btn:hover {
+  background: #1A1A1A;
+}

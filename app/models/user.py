@@ -1,10 +1,10 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, Dict, Any
 
 class UserModel(BaseModel):
     # MongoDB ObjectId field
-    id: Optional[str] = Field(None, alias="_id") 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     
     user_id: str                           
     username: str

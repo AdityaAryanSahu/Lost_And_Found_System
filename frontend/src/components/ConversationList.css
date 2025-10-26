@@ -1,0 +1,245 @@
+/* src/components/ConversationList.css */
+.conversation-list {
+  width: 360px;
+  height: 100%;
+  /* Dark background */
+  background: #1A1A1A;
+  border-right: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.conversation-list-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1A1A1A;
+}
+
+.conversation-list-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  /* Gold heading */
+  color: #D4AF37;
+  margin: 0;
+}
+
+.conversation-count {
+  /* Gold count badge */
+  background: #D4AF37;
+  color: black;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.conversation-items {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar styling for dark mode */
+.conversation-items::-webkit-scrollbar {
+  width: 6px;
+}
+
+.conversation-items::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.conversation-items::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 3px;
+}
+
+.conversation-items::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+.conversation-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #232323;
+  position: relative;
+}
+
+.conversation-item:hover {
+  background: #232323; /* Dark hover background */
+}
+
+.conversation-item.active {
+  background: #232323; /* Dark active background */
+  /* Gold active indicator */
+  border-left: 3px solid #D4AF37;
+}
+
+.conversation-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #D4AF37;
+}
+
+.conversation-avatar {
+  position: relative;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.avatar-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  /* Gold gradient avatar */
+  background: linear-gradient(135deg, #b8941f 0%, #d4af37 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  font-weight: 600;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+.online-indicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background: #10b981;
+  border: 2px solid #1A1A1A; /* Dark border on dark background */
+  border-radius: 50%;
+}
+
+.conversation-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.conversation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.conversation-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #CCCCCC; /* Light text */
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conversation-time {
+  font-size: 12px;
+  color: #888;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.conversation-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.conversation-preview p {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.conversation-preview p.unread {
+  color: #CCCCCC; /* Light text for unread */
+  font-weight: 600;
+}
+
+.unread-badge {
+  /* Gold badge */
+  background: #D4AF37;
+  color: black;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Empty and loading states */
+.empty-state,
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  height: calc(100% - 72px);
+  background: #1A1A1A; /* Dark background */
+}
+
+.empty-state svg {
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.empty-state p {
+  font-size: 16px;
+  font-weight: 600;
+  color: #CCCCCC;
+  margin: 0 0 8px 0;
+}
+
+.empty-state span {
+  font-size: 14px;
+  color: #888;
+}
+
+.loading-state .spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #333;
+  /* Gold spinner color */
+  border-top-color: #D4AF37;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-state p,
+.error-state p {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+}
+
+.error-state p {
+  color: #ef4444;
+}

@@ -1,0 +1,82 @@
+# Python cache and virtual environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+app/chatbot/
+nlu.json
+*.rasa
+app/se_proj/
+app/rasa_env/
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.sublime-project
+.sublime-workspace
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker (don't copy these into image)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.*.vault
+
+# OS files
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+
+# Node (if any frontend)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Testing and coverage
+.pytest_cache/
+htmlcov/
+.mypy_cache/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+~$*

@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: lost-and-found-api
+    env: python
+    plan: free  # Upgrade to standard/pro for production
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      
+      # Database - MongoDB Atlas
+      - key: MONGO_URI
+        sync: false  # Set this in Render dashboard: mongodb+srv://user:pass@cluster.mongodb.net/Lost_and_Found
+      - key: DB_NAME
+        value: Lost_and_Found
+      
+      # Security
+      - key: SECRET_KEY
+        sync: false  # Generate with: openssl rand -hex 32
+      - key: ALGORITHM
+        value: HS256
+      - key: DEBUG
+        value: "False"
+      
+      # MinIO Storage
+      - key: MINIO_ENDPOINT
+        sync: false  # Your MinIO server URL (e.g., minio.yourserver.com:9000)
+      - key: MINIO_ROOT_USER
+        sync: false
+      - key: MINIO_ROOT_PASSWORD
+        sync: false
+      - key: MINIO_SECURE
+        value: "True"  # Use HTTPS in production
+      - key: MINIO_BUCKET_NAME
+        value: lost-and-found

@@ -1,0 +1,41 @@
+/* src/components/FilterBar.css */
+.filter-bar {
+    display: flex;
+    flex-direction: column;
+    padding: 0 0 20px 0;
+}
+.filter-bar h2 {
+    font-size: 1.3em;
+    margin-bottom: 15px;
+    /* Gold border */
+    border-bottom: 1px solid #D4AF37;
+    padding-bottom: 10px;
+    color: #D4AF37;
+}
+.filter-bar input[type="text"],
+.filter-bar input[type="date"],
+.filter-bar select {
+    margin-bottom: 15px;
+    /* This styling is usually handled by the parent components, but setting default dark styles here */
+    background: #333333;
+    border-color: #555;
+    color: #CCCCCC;
+}
+.filter-bar label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 0.95em;
+    cursor: pointer;
+    color: #CCCCCC; /* Light text */
+}
+.filter-bar input[type="checkbox"] {
+    width: auto;
+    margin-left: 10px;
+}
+.filter-bar button {
+    margin-top: 10px;
+    /* Gold button */
+    background-color: #D4AF37;
+    color: black;
+}

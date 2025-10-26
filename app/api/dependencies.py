@@ -10,6 +10,8 @@ from app.services.claim_service import ClaimService
 from app.services.image_service import ImageService
 from app.services.user_service import UserService
 from app.services.message_service import MessageService
+from app.services.noti_service import NotificationService
+from app.services.search_service import SearchService
 from app.repositories.auth_repository import AuthRepo
 from app.repositories.claim_repository import ClaimRepo
 from app.repositories.image_repository import ImageRepo
@@ -17,10 +19,11 @@ from app.repositories.item_repository import ItemRepo
 from app.repositories.match_repository import MatchRepo
 from app.repositories.user_repository import UserRepo
 from app.repositories.message_repository import MessageRepository
+from app.core.database import get_db
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-
+#repos 
 def get_auth_repo():
     return AuthRepo()
 
@@ -42,26 +45,35 @@ def get_user_repo():
 def get_message_repo():
     return MessageRepository()
 
+
+#services
 def get_auth_service():
-    return AuthService()
+    return AuthService(user_repo=get_user_repo())
 
 def get_item_service():
-    return ItemService()
+    return ItemService(image_service= get_image_service(), item_repo=get_item_repo(), image_repo=get_image_repo())
 
 def get_claim_service():
-    return ClaimService()
+    return ClaimService(item_service=get_item_service(), noti_service=NotificationService(),claim_repo=get_claim_repo(), user_repo=get_user_repo())
 
 def get_match_service():
-    return MatchService()
+    return MatchService(item_service=get_item_service(), match_repo=get_match_repo())
 
 def get_image_service():
     return ImageService()
 
 def get_user_service():
-    return UserService()
+    return UserService(user_repo=get_user_repo())
 
-def get_message_service():
-    return MessageService()
+def get_message_service() -> MessageService:
+   
+    db = get_db()
+    message_repo = MessageRepository(db)
+    return MessageService(message_repo)
+
+
+def get_search_service():
+    return SearchService(item_service=get_item_service())
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], 
                            user_service: Annotated[UserService, Depends(get_user_service)]) -> UserResponse:
