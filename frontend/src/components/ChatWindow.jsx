@@ -16,7 +16,7 @@ const ChatWindow = ({ conversationId, conversation }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // ✅ Fetch messages function (can be called multiple times)
+  // Fetch messages function (can be called multiple times)
   const fetchMessages = async () => {
     if (!conversationId || !user) return;
     
@@ -32,25 +32,25 @@ const ChatWindow = ({ conversationId, conversation }) => {
     }
   };
 
-  // ✅ Set up polling for real-time updates
+  // Set up polling for real-time updates
   useEffect(() => {
     if (!conversationId || !user) return;
 
     setLoading(true);
     fetchMessages(); // Initial fetch
 
-    // ✅ Poll every 3 seconds for new messages
+    // Poll every 3 seconds for new messages
     const pollInterval = setInterval(() => {
       fetchMessages();
     }, 3000);
 
-    // ✅ Cleanup on unmount or conversation change
+    // Cleanup on unmount or conversation change
     return () => {
       clearInterval(pollInterval);
     };
   }, [conversationId, user]);
 
-  // ✅ Auto-scroll when messages update
+  // Auto-scroll when messages update
   useEffect(() => {
     if (messages.length > 0) {
       setTimeout(scrollToBottom, 100);

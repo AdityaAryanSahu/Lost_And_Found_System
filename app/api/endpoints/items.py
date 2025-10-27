@@ -65,7 +65,7 @@ async def get_specific_item(
     
     return item_res
 
-# ✅✅✅ FIXED PUT ENDPOINT
+
 @item_router.put("/{item_id}", response_model=ItemResponse)
 async def item_update(
     item_id: str,

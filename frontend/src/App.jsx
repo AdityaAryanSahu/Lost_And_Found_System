@@ -33,7 +33,7 @@ function AppRoutes() {
       <Route path="/items/:id" element={<ProtectedRoute><ItemDetailPage /></ProtectedRoute>} />
       <Route path="/upload-item" element={<ProtectedRoute><ItemUploadPage /></ProtectedRoute>} />
       
-      {/* ✅ ADD THESE THREE ROUTES */}
+      {/* ADD THESE THREE ROUTES */}
       <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       <Route path="/my-items" element={<ProtectedRoute><MyItemsPage /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />

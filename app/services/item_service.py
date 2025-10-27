@@ -49,11 +49,11 @@ class ItemService:
             
             for m in item_models_list:
                 try:
-                    # Convert MongoDB ObjectId to string
+                    #Convert MongoDB ObjectId to string
                     if '_id' in m and not isinstance(m['_id'], str):
                         m['_id'] = str(m['_id'])
                     
-                    # ✅ FETCH IMAGES FROM SEPARATE COLLECTION
+                    # FETCH IMAGES FROM SEPARATE COLLECTION
                     item_id = m.get('item_id')
                     if item_id and self.image_repository:
                         images = await self.image_repository.get_images_by_item(item_id)
@@ -87,7 +87,7 @@ class ItemService:
                 if '_id' in item_doc and not isinstance(item_doc['_id'], str):
                     item_doc['_id'] = str(item_doc['_id'])
                 
-                # ✅ FETCH IMAGES FROM SEPARATE COLLECTION
+                #FETCH IMAGES FROM SEPARATE COLLECTION
                 if self.image_repository:
                     images = await self.image_repository.get_images_by_item(item_id)
                     logger.info(f"Fetched {len(images)} images for item {item_id}")

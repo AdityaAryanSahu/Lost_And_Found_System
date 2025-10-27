@@ -17,23 +17,23 @@ class MessageRepository:
         self.messages = self.db.messages
         self.conversations = self.db.conversations
     
-    # ✅ ALL methods are now async
+    # ALL methods are now async
     async def create_message(self, message: Message) -> Message:
         """Create a new message"""
         message_dict = message.to_dict()
-        await self.messages.insert_one(message_dict)  # ✅ await
+        await self.messages.insert_one(message_dict)  # await
         return message
     
     async def create_conversation(self, conversation: Conversation) -> Conversation:
         """Create a new conversation"""
         conv_dict = conversation.to_dict()
-        await self.conversations.insert_one(conv_dict)  # ✅ await
+        await self.conversations.insert_one(conv_dict)  # await
         return conversation
     
     async def update_conversation(self, conversation: Conversation) -> Conversation:
         """Update an existing conversation"""
         conv_dict = conversation.to_dict()
-        await self.conversations.update_one(  # ✅ await
+        await self.conversations.update_one(  # await
             {"conversation_id": conversation.conversation_id},
             {"$set": conv_dict}
         )
@@ -41,14 +41,14 @@ class MessageRepository:
     
     async def get_conversation_by_id(self, conversation_id: str) -> Optional[Conversation]:
         """Get conversation by ID"""
-        conv_dict = await self.conversations.find_one({"conversation_id": conversation_id})  # ✅ await
+        conv_dict = await self.conversations.find_one({"conversation_id": conversation_id})  # await
         if conv_dict:
             return Conversation.from_dict(conv_dict)
         return None
     
     async def get_conversation_by_participants(self, participant_ids: List[str]) -> Optional[Conversation]:
         """Get conversation by participants"""
-        # ✅ Use $all to find conversations with both participants
+        # Use $all to find conversations with both participants
         conv_dict = await self.conversations.find_one({
             "participant_ids": {"$all": sorted(participant_ids)}
         })
@@ -67,7 +67,7 @@ class MessageRepository:
         
         cursor = self.conversations.find(query).sort("last_message_at", DESCENDING).limit(limit)
         conversations = []
-        async for doc in cursor:  # ✅ async for
+        async for doc in cursor:  # async for
             conversations.append(Conversation.from_dict(doc))
         return conversations
     
@@ -82,6 +82,6 @@ class MessageRepository:
         ).sort("created_at", ASCENDING).limit(limit)
         
         messages = []
-        async for doc in cursor:  # ✅ async for
+        async for doc in cursor:  # async for
             messages.append(Message.from_dict(doc))
         return messages

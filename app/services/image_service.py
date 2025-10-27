@@ -54,13 +54,13 @@ class ImageService:
                     content_type="image/webp"
                 )
                 
-                # ✅ FIXED: Replace 'minio' hostname with 'localhost' for frontend access
+                #Replace 'minio' hostname with 'localhost' for frontend access
                 file_url = file_url.replace("http://minio:9000", "http://localhost:9000")
                 
-                # ✅ FIXED: Use 'url' instead of 'path'
+                #Use 'url' instead of 'path'
                 image_dto = Image(
                     item_id=item_id,
-                    url=file_url,  # ✅ Changed from 'path' to 'url'
+                    url=file_url,  #Changed from 'path' to 'url'
                     date_uploaded=datetime.now()
                 )
                 
@@ -80,7 +80,7 @@ class ImageService:
             logger.error(f"Error processing image: {e}")
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail=f"Error processing image: {str(e)}"  # ✅ Include error message
+                detail=f"Error processing image: {str(e)}"  #Include error message
             )
 
     async def delete_image(self, url: str) -> bool:

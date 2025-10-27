@@ -24,7 +24,7 @@ async def send_message(
     message_service: MessageService = Depends(get_message_service)
 ) -> MessageResponse:
     try:
-        # ✅ Direct await
+        # Direct await
         message = await message_service.send_message(
             sender_id=current_user.user_id,
             receiver_id=message_data.receiver_id,
@@ -46,7 +46,7 @@ async def get_conversations(
 ) -> ConversationListResponse:
     """Get all conversations"""
     try:
-        # ✅ Direct await - NO asyncio.to_thread
+        # Direct await - NO asyncio.to_thread
         conversations = await message_service.get_user_conversations(
             user_id=current_user.user_id,
             include_archived=include_archived,
@@ -70,19 +70,19 @@ async def get_conversation_messages(
 ) -> MessageListResponse:
     """Get messages in conversation"""
     try:
-        # ✅ Direct await - NO asyncio.to_thread
+        # Direct await - NO asyncio.to_thread
         conversation = await message_service.get_conversation(conversation_id)
         
         if current_user.user_id not in conversation.participant_ids:
             raise HTTPException(status_code=403, detail="No access")
         
-        # ✅ Direct await
+        # Direct await
         messages = await message_service.get_conversation_messages(
             conversation_id=conversation_id,
             limit=limit
         )
         
-        # ✅ Direct await
+        #  Direct await
         await message_service.mark_conversation_as_read(
             conversation_id=conversation_id,
             user_id=current_user.user_id

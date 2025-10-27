@@ -44,7 +44,7 @@ class MessageService:
         
         await self.message_repo.create_message(message)
         
-        # ✅ Use conversation's built-in methods
+        # Use conversation's built-in methods
         conversation.update_last_message(content[:100], message.created_at)
         conversation.increment_unread_for_user(receiver_id)
         
@@ -64,16 +64,16 @@ class MessageService:
         conversation = await self.message_repo.get_conversation_by_participants(participant_ids)
         
         if not conversation:
-            # ✅ Pass participant_ids as a SET, not list
+            # Pass participant_ids as a SET, not list
             conversation = Conversation(
-                participant_ids=set([user1_id, user2_id]),  # ✅ Convert to set
+                participant_ids=set([user1_id, user2_id]),  # Convert to set
                 conversation_id=str(uuid.uuid4()),
                 item_id=item_id,
                 created_at=datetime.utcnow(),
                 last_message_at=datetime.utcnow(),
                 last_message_content=None,
                 is_archived=False,
-                unread_count={}  # ✅ This is now in __init__
+                unread_count={}  #This is now in __init__
             )
             await self.message_repo.create_conversation(conversation)
         
@@ -81,16 +81,16 @@ class MessageService:
 
     
     async def get_user_conversations(self, user_id: str, include_archived: bool = False, limit: int = 20):
-        return await self.message_repo.get_user_conversations(user_id, include_archived, limit)  # ✅ await
+        return await self.message_repo.get_user_conversations(user_id, include_archived, limit)  #  await
     
     async def get_conversation(self, conversation_id: str):
-        return await self.message_repo.get_conversation_by_id(conversation_id)  # ✅ await
+        return await self.message_repo.get_conversation_by_id(conversation_id)  #  await
     
     async def get_conversation_messages(self, conversation_id: str, limit: int = 50):
-        return await self.message_repo.get_messages_by_conversation(conversation_id, limit)  # ✅ await
+        return await self.message_repo.get_messages_by_conversation(conversation_id, limit)  #  await
     
     async def mark_conversation_as_read(self, conversation_id: str, user_id: str):
-        conversation = await self.get_conversation(conversation_id)  # ✅ await
+        conversation = await self.get_conversation(conversation_id)  #  await
         if user_id in conversation.unread_count:
             conversation.unread_count[user_id] = 0
-            await self.message_repo.update_conversation(conversation)  # ✅ await
+            await self.message_repo.update_conversation(conversation)  #  await

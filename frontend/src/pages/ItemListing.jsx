@@ -125,8 +125,15 @@ const ItemListingPage = () => {
       {/* Top Header Bar */}
       <header className="top-header">
         <div className="header-left">
-          <h1 className="app-title">📦 Lost & Found</h1>
-        </div>
+          <div className="app-logo-container">
+            <img 
+                src="/lotandfoundlogo.jpg" // <<< CRITICAL: Update this path 
+                alt="Lost & Found Portal Logo" 
+                className="app-logo-icon"
+            />
+            <h1 className="app-title">Lost & Found Inventory</h1>
+          </div>
+          </div>
         
         <div className="header-center">
           <button 
@@ -156,7 +163,7 @@ const ItemListingPage = () => {
                     <button onClick={() => navigate('/my-items')}>
                      My Uploads
                     </button>
-                    {/* ✅ ADD THIS LINE */}
+                    {/*  ADD THIS LINE */}
                     <button onClick={() => navigate('/messages')}>
                      Messages
                     </button>
@@ -297,7 +304,7 @@ const ItemListingPage = () => {
                     <p>📍 {item.desc}</p>
                     <p>📅 {new Date(item.created_at).toLocaleDateString()}</p>
                     <p className={item.is_claimed ? 'status-claimed' : 'status-available'}>
-                      {item.is_claimed ? '✅ Claimed' : '🔍 Available'}
+                      {item.is_claimed ? ' Claimed' : ' Available'}
                     </p>
                   </div>
                 </div>

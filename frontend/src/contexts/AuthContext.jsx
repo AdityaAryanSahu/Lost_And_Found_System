@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    // ✅ Load user data from localStorage on mount
+    // Load user data from localStorage on mount
     useEffect(() => {
         const loadUser = () => {
             try {
@@ -19,9 +19,9 @@ export const AuthProvider = ({ children }) => {
                     const userData = JSON.parse(storedUser);
                     setUser(userData);
                     setIsAuthenticated(true);
-                    console.log('✅ User loaded from localStorage:', userData);
+                    console.log('User loaded from localStorage:', userData);
                 } else {
-                    console.log('❌ No token or user found in localStorage');
+                    console.log('No token or user found in localStorage');
                 }
             } catch (error) {
                 console.error('Error loading user from localStorage:', error);
@@ -36,17 +36,17 @@ export const AuthProvider = ({ children }) => {
         loadUser();
     }, []);
 
-    // ✅ Save user to localStorage whenever it changes
+    // Save user to localStorage whenever it changes
     const updateUser = (userData) => {
         if (userData) {
             setUser(userData);
             setIsAuthenticated(true);
             localStorage.setItem('user', JSON.stringify(userData));
-            console.log('✅ User saved to localStorage:', userData);
+            console.log('User saved to localStorage:', userData);
         }
     };
 
-    // ✅ Login function
+    // Login function
     const login = (userData, token) => {
         // Save token
         localStorage.setItem('token', token);
@@ -54,24 +54,24 @@ export const AuthProvider = ({ children }) => {
         // Save user data
         updateUser(userData);
         
-        console.log('✅ Login successful', { userData, token });
+        console.log(' Login successful', { userData, token });
     };
 
-    // ✅ Logout function
+    // Logout function
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUser(null);
         setIsAuthenticated(false);
-        console.log('✅ Logout successful');
+        console.log('Logout successful');
     };
 
     return (
         <AuthContext.Provider value={{
             user,
-            setUser: updateUser,  // ✅ Use updateUser which saves to localStorage
-            login,  // ✅ New login function
-            updateUser,  // ✅ For profile updates
+            setUser: updateUser,  // Use updateUser which saves to localStorage
+            login,  // New login function
+            updateUser,  //  For profile updates
             isAuthenticated,
             isLoading,
             logout

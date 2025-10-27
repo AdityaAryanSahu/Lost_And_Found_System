@@ -1,11 +1,11 @@
 // src/components/ConversationList.jsx
 import React, { useEffect, useState } from 'react';
 import { getConversations } from '../api/messageService';
-import { useAuth } from '../contexts/AuthContext'; // ✅ Add this
+import { useAuth } from '../contexts/AuthContext'; 
 import './ConversationList.css';
 
 const ConversationList = ({ onSelectConversation, selectedConversationId }) => {
-  const { user } = useAuth(); // ✅ Add this
+  const { user } = useAuth(); 
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -42,7 +42,7 @@ const ConversationList = ({ onSelectConversation, selectedConversationId }) => {
     }
   };
 
-  // ✅ ADD THIS HELPER FUNCTION
+  
   const getOtherParticipant = (participantIds) => {
     if (!user || !participantIds) return 'Unknown';
     const otherId = participantIds.find(id => id !== user.user_id);
@@ -94,7 +94,7 @@ const ConversationList = ({ onSelectConversation, selectedConversationId }) => {
       ) : (
         <div className="conversation-items">
           {conversations.map((conv) => {
-            // ✅ Get the other participant's ID (not your own)
+            
             const otherParticipantId = conv.participant_ids?.find(id => id !== user?.user_id);
             const participantName = otherParticipantId 
               ? `User ${otherParticipantId.substring(0, 8)}` 

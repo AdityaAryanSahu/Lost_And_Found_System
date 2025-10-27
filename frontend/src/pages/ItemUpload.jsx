@@ -22,9 +22,9 @@ const ItemUploadPage = () => {
     const [existingImages, setExistingImages] = useState([]); // For edit mode
     const [loading, setLoading] = useState(false);
     const [fetchingItem, setFetchingItem] = useState(false);
-    const [errors, setErrors] = useState([]); // ✅ Changed to array
+    const [errors, setErrors] = useState([]); // Changed to array
 
-    // ✅ Fetch item data if in edit mode
+    //  Fetch item data if in edit mode
     useEffect(() => {
         if (isEditMode) {
             fetchItemForEdit();
@@ -59,12 +59,12 @@ const ItemUploadPage = () => {
         }
         
         setImages(files);
-        setErrors([]); // ✅ Clear errors
+        setErrors([]); //  Clear errors
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setErrors([]); // ✅ Clear previous errors
+        setErrors([]); //  Clear previous errors
 
         // Validation checks
         if (!user) {
@@ -109,7 +109,7 @@ const ItemUploadPage = () => {
             let response;
             
             if (isEditMode) {
-                // ✅ Update existing item (PUT request)
+                //  Update existing item (PUT request)
                 response = await apiClient.put(`/items/${editItemId}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -118,7 +118,7 @@ const ItemUploadPage = () => {
                 console.log('Item updated successfully:', response.data);
                 alert('Item updated successfully!');
             } else {
-                // ✅ Create new item (POST request)
+                //  Create new item (POST request)
                 response = await apiClient.post('/items', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -138,7 +138,7 @@ const ItemUploadPage = () => {
         } catch (err) {
             console.error("Operation failed:", err.response?.data);
             
-            // ✅✅✅ PROPER ERROR HANDLING
+            //  PROPER ERROR HANDLING
             const errorDetail = err.response?.data?.detail;
             
             if (Array.isArray(errorDetail)) {
@@ -224,7 +224,7 @@ const ItemUploadPage = () => {
                 
                 {images.length > 0 && <small>{images.length} new file(s) selected.</small>}
 
-                {/* ✅✅✅ FIXED ERROR DISPLAY */}
+                {/*  FIXED ERROR DISPLAY */}
                 {errors.length > 0 && (
                     <div className="error-container">
                         {errors.map((error, index) => (

@@ -19,7 +19,7 @@ const ItemDetailPage = () => {
   const [submittingClaim, setSubmittingClaim] = useState(false);
 
   useEffect(() => {
-    // ✅ Check if user is logged in
+    // Check if user is logged in
     if (!user) {
       navigate('/auth');
       return;
@@ -40,7 +40,7 @@ const ItemDetailPage = () => {
   };
 
   const handleContactSeller = async () => {
-    // ✅ Add null checks
+    // Add null checks
     if (!user) {
       alert("Please log in to contact the seller");
       navigate('/auth');
@@ -121,7 +121,7 @@ const ItemDetailPage = () => {
     }
   };
 
-  // ✅ NEW: Mark as Claimed Handler
+  // NEW: Mark as Claimed Handler
   const handleMarkAsClaimed = async () => {
     if (!window.confirm('Mark this item as claimed? This will hide it from search results.')) {
       return;
@@ -141,7 +141,7 @@ const ItemDetailPage = () => {
     }
   };
 
-  // ✅ Early returns with null checks
+  // Early returns with null checks
   if (!user) {
     return (
       <div className="item-detail-page">
@@ -193,7 +193,7 @@ const ItemDetailPage = () => {
           {item.img && item.img.length > 0 ? (
             <img src={item.img[0].url} alt={item.desc} className="detail-image" />
           ) : (
-            <div className="no-image-large">📷 No Image</div>
+            <div className="no-image-large"> No Image</div>
           )}
         </div>
 
@@ -223,47 +223,47 @@ const ItemDetailPage = () => {
                     className="contact-btn"
                     disabled={sendingMessage}
                   >
-                    {sendingMessage ? '💬 Starting...' : '💬 Contact Seller'}
+                    {sendingMessage ? ' Starting...' : ' Contact Seller'}
                   </button>
                   <button 
                     onClick={() => setShowClaimModal(true)}
                     className="claim-btn"
                   >
-                    ✅ Claim This Item
+                     Claim This Item
                   </button>
                 </>
               )}
               {item.is_claimed && (
                 <div className="claimed-banner">
-                  ✅ This item has been claimed
+                   This item has been claimed
                 </div>
               )}
             </div>
           ) : (
-            // ✅ OWNER SECTION WITH MARK AS CLAIMED
+            //  OWNER SECTION WITH MARK AS CLAIMED
             <div className="own-item-notice">
-              <p>📝 This is your post</p>
+              <p> This is your post</p>
               <div className="owner-action-buttons">
                 <button 
                   className="edit-btn" 
                   onClick={() => navigate(`/upload-item?edit=${item.item_id}`)}
                 >
-                  ✏️ Edit Item
+                   Edit Item
                 </button>
                 
-                {/* ✅ MARK AS CLAIMED BUTTON */}
+                {/*  MARK AS CLAIMED BUTTON */}
                 {!item.is_claimed && (
                   <button 
                     className="mark-claimed-btn"
                     onClick={handleMarkAsClaimed}
                   >
-                    ✅ Mark as Claimed
+                     Mark as Claimed
                   </button>
                 )}
                 
                 {item.is_claimed && (
                   <span className="already-claimed-badge">
-                    ✅ Already Claimed
+                     Already Claimed
                   </span>
                 )}
               </div>

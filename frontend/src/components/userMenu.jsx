@@ -63,25 +63,25 @@ const UserMenu = () => {
           </div>
 
           <button onClick={() => handleMenuClick('/profile')} style={{ width: '100%', padding: '10px 20px', border: 'none', background: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '14px' }}>
-            👤 My Profile
+            My Profile
           </button>
           
           <button onClick={() => handleMenuClick('/my-items')} style={{ width: '100%', padding: '10px 20px', border: 'none', background: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '14px' }}>
-            📋 My Uploads
+            My Uploads
           </button>
 
-          {/* ✅ ADD MESSAGES BUTTON HERE */}
+          {/* ADD MESSAGES BUTTON HERE */}
           <button onClick={() => handleMenuClick('/messages')} style={{ width: '100%', padding: '10px 20px', border: 'none', background: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '14px' }}>
-            💬 Messages
+            Messages
           </button>
           
           <button onClick={() => handleMenuClick('/settings')} style={{ width: '100%', padding: '10px 20px', border: 'none', background: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '14px' }}>
-            ⚙️ Settings
+            Settings
           </button>
 
           <div style={{ borderTop: '1px solid #eee', marginTop: '8px', paddingTop: '8px' }}>
             <button onClick={() => { logout(); navigate('/auth'); }} style={{ width: '100%', padding: '10px 20px', border: 'none', background: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '14px', color: '#e74c3c', fontWeight: 600 }}>
-              🚪 Logout
+              Logout
             </button>
           </div>
         </div>

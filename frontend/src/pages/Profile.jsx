@@ -135,7 +135,7 @@ const ProfilePage = () => {
                         fontSize: '14px', 
                         color: item.is_claimed ? '#e74c3c' : '#27ae60' // Retaining status colors for meaning
                     }}>
-                      {item.is_claimed ? '✅ Claimed' : '🔍 Available'}
+                      {item.is_claimed ? ' Claimed' : ' Available'}
                     </p>
                   </div>
                 </div>

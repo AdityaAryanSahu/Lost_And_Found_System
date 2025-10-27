@@ -10,7 +10,7 @@ const PASSWORD_TITLE = "Must be at least 8 characters and include 1 uppercase, 1
 
 const AuthPage = () => {
     const navigate = useNavigate();
-    const { isAuthenticated, login } = useAuth();  // ✅ Use login function from context
+    const { isAuthenticated, login } = useAuth();  // Use login function from context
     const [isRegister, setIsRegister] = useState(false);
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
@@ -41,7 +41,7 @@ const AuthPage = () => {
             const token = loginResponse.data.token;
             
             if (token) {
-                // ✅ Step 2: Fetch full user profile with email
+                // Step 2: Fetch full user profile with email
                 try {
                     // Set token temporarily for the next request
                     localStorage.setItem('token', token);
@@ -49,7 +49,7 @@ const AuthPage = () => {
                     // Fetch user profile
                     const profileResponse = await apiClient.get('/users/me');
                     
-                    // ✅ Create complete user object with email
+                    // Create complete user object with email
                     const userData = {
                         user_id: profileResponse.data.user_id || userId,
                         email: profileResponse.data.email || null,
@@ -57,9 +57,9 @@ const AuthPage = () => {
                         // Add any other fields from your backend
                     };
                     
-                    console.log('✅ Login successful, user data:', userData);
+                    console.log('Login successful, user data:', userData);
                     
-                    // ✅ Use login function which saves both token and user
+                    // Use login function which saves both token and user
                     login(userData, token);
                     
                     navigate('/', { replace: true });
@@ -67,7 +67,7 @@ const AuthPage = () => {
                 } catch (profileError) {
                     console.error('Error fetching profile:', profileError);
                     
-                    // ✅ Fallback: If profile fetch fails, still login with basic info
+                    // Fallback: If profile fetch fails, still login with basic info
                     const basicUserData = {
                         user_id: userId,
                         email: email || null  // Use registration email if available
@@ -108,7 +108,7 @@ const AuthPage = () => {
                 email
             });
             
-            setMessage('✅ Registration successful! Please login.');
+            setMessage('Registration successful! Please login.');
             setIsRegister(false);
             
             // Clear form
@@ -128,7 +128,14 @@ const AuthPage = () => {
     return (
         <div className="auth-container">
             <div className="auth-card">
-                <h1>📦 Lost & Found Portal</h1>
+                <div className="auth-logo-container">
+                    <img 
+                        src="/lotandfoundlogo.jpg" 
+                        alt="Lost & Found Portal Logo" 
+                        className="auth-logo-icon"
+                    />
+                    <h1 className="auth-title-text">Lost & Found Inventory</h1>
+                </div>
                 <h2>{isRegister ? 'Register' : 'Login'}</h2>
 
                 {message && (

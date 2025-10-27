@@ -99,7 +99,7 @@ const MyItemsPage = () => {
                 transition: 'transform 0.2s'
               }}
             >
-              ✨ Post Your First Item
+               Post Your First Item
             </button>
           </div>
         ) : (
@@ -165,10 +165,10 @@ const MyItemsPage = () => {
                   </div>
                   <div style={{ padding: '16px', textAlign: 'center' }}>
                     <h3 style={{ margin: '0 0 8px 0', fontSize: '18px', color: '#CCCCCC' }}>{item.type}</h3> {/* Light title text */}
-                    <p style={{ fontSize: '14px', color: '#999', margin: '4px 0' }}>📝 {item.desc}</p>
+                    <p style={{ fontSize: '14px', color: '#999', margin: '4px 0' }}>📍 {item.desc}</p>
                     <p style={{ fontSize: '14px', color: '#999', margin: '4px 0' }}>📅 {new Date(item.created_at).toLocaleDateString()}</p>
                     <p style={{ fontSize: '14px', fontWeight: '600', margin: '4px 0', color: item.is_claimed ? '#e74c3c' : '#27ae60' }}>
-                      {item.is_claimed ? '✅ Claimed' : '🔍 Available'}
+                      {item.is_claimed ? ' Claimed' : ' Available'}
                     </p>
                   </div>
                 </div>
