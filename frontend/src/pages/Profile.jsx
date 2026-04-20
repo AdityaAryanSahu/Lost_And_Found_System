@@ -59,9 +59,10 @@ const ProfilePage = () => {
         {/* Profile Info Card */}
         <div className="profile-card">
           <div className="profile-avatar">
-            {user.user_id?.charAt(0).toUpperCase()}
+            {user.username?.charAt(0).toUpperCase()}
           </div>
-          <h2 className="user-id">{user.user_id}</h2>
+          <h2 className="user-id">{user.username}</h2>
+          <h3 className="user-id">{user.user_id}</h3>
           <p className="user-email">{user.email || 'No email'}</p>
           
           <div className="user-stats">
@@ -82,7 +83,7 @@ const ProfilePage = () => {
 
         {/* My Uploads Section */}
         <div className="my-uploads-section">
-          <h2>My Uploads ({userItems.length})</h2>
+          <h2>My Uploads : {userItems.length}</h2>
           {loading ? (
             <p className="no-items">Loading...</p>
           ) : userItems.length === 0 ? (

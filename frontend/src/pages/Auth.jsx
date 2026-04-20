@@ -49,7 +49,7 @@ const AuthPage = () => {
                     
                     // Fetch user profile
                     const profileResponse = await apiClient.get('/users/me');
-                    
+                    console.log(profileResponse.data);
                     // Create complete user object with email
                     const userData = {
                         user_id: profileResponse.data.user_id || userId,

@@ -160,7 +160,7 @@ const ItemListingPage = () => {
               onClick={() => setShowUserMenu(!showUserMenu)}
               title="User Profile"
             >
-              {user?.user_id?.charAt(0).toUpperCase() || 'U'}
+              {user?.username?.charAt(0).toUpperCase() || 'U'}
             </button>
             
             {showUserMenu && (

@@ -37,6 +37,7 @@ const SettingsPage = () => {
           <h2>Account Information</h2>
           <div className="card-content">
             <p><strong>User ID:</strong> {user.user_id}</p>
+            <p><strong>User Name:</strong> {user.username}</p>
             <p><strong>Email:</strong> {user.email || 'Not set'}</p>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.BACKEND_APP_URL ?? 'https://lost-and-found-system-6tfa.onrender.com';
+const API_URL = process.env.BACKEND_APP_URL;
 
 const apiClient = axios.create({
   baseURL: API_URL,

@@ -32,6 +32,7 @@ class UserCreation(BaseModel):
 class UserResponse(BaseModel):
     user_id:str
     email: Optional[str]=None
+    username: Optional[str] = None
     acc_created: datetime
     status:int
     mssg:str
@@ -40,6 +41,7 @@ class UserResponse(BaseModel):
         return cls(
             user_id=user_model.user_id,
             email=user_model.email,
+            username=user_model.username,
             acc_created=user_model.acc_created,
             status=200, 
             mssg="Success"
