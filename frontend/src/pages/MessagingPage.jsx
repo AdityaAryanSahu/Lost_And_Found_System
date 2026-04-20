@@ -13,16 +13,24 @@ const MessagingPage = () => {
     setSelectedConversation(conversation);
   };
 
+  const handleBackToConversations = () => {
+    setSelectedConversationId(null);
+    setSelectedConversation(null);
+  };
+
   return (
-    <div className="messaging-page">
-      <ConversationList 
-        onSelectConversation={handleSelectConversation}
-        selectedConversationId={selectedConversationId}
-      />
-      <ChatWindow 
-        conversationId={selectedConversationId}
-        conversation={selectedConversation}
-      />
+    <div className="messaging-page-wrapper">
+      <div className="messaging-page">
+        <ConversationList
+          onSelectConversation={handleSelectConversation}
+          selectedConversationId={selectedConversationId}
+        />
+        <ChatWindow
+          conversationId={selectedConversationId}
+          conversation={selectedConversation}
+          onBack={handleBackToConversations}
+        />
+      </div>
     </div>
   );
 };

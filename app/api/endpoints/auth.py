@@ -22,3 +22,8 @@ async def login(user_in:LoginRequest, service: Annotated[AuthService, Depends(ge
     if verification.status != status.HTTP_200_OK :
         raise HTTPException(status_code=verification.status, detail=verification.mssg)
     return verification
+
+@auth_router.post("/refresh")
+async def refresh_token(refresh_token:str, service: Annotated[AuthService, Depends(get_auth_service)]):
+    new_access_token= await service.refresh_access_token(refresh_token)
+    return {"access_token": new_access_token}

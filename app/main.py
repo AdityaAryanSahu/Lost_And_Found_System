@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import logging
+import os
 
 from app.api.router import api_router
 from app.core.database import connect_to_mongo, close_mongo_connection
@@ -9,6 +10,7 @@ from app.core.database import connect_to_mongo, close_mongo_connection
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+port = int(os.environ.get("PORT", 8000))
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

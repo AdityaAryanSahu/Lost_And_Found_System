@@ -11,7 +11,8 @@ const ItemListingPage = () => {
   const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showUserMenu, setShowUserMenu] = useState(false); // ✅ ADDED
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,7 +31,7 @@ const ItemListingPage = () => {
     applyFilters();
   }, [searchQuery, itemType, showClaimed, dateFrom, dateTo, itemStatus, items]);
   
-  // ✅ ADDED - Close dropdown when clicking outside
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (showUserMenu && !event.target.closest('.user-menu')) {
@@ -120,77 +121,101 @@ const ItemListingPage = () => {
     navigate(`/items/${itemId}`);
   };
 
+  const badgeGradients = {
+    'Books': 'linear-gradient(135deg, #A77E2A 0%, #D4AF37 100%)',
+    'Electronics': 'linear-gradient(135deg, #1C7ED6 0%, #00f2fe 100%)',
+    'Clothing': 'linear-gradient(135deg, #D32F2F 0%, #FF5722 100%)',
+    'Keys': 'linear-gradient(135deg, #5D4037 0%, #8D6E63 100%)',
+    'Others': 'linear-gradient(135deg, #7B1FA2 0%, #9C27B0 100%)',
+  };
+
   return (
-    <div className="app-container">
+    <div className="item-listing-page">
       {/* Top Header Bar */}
       <header className="top-header">
         <div className="header-left">
           <div className="app-logo-container">
             <img 
-                src="/lotandfoundlogo.jpg" // <<< CRITICAL: Update this path 
+                src="/lotandfoundlogo.jpg"
                 alt="Lost & Found Portal Logo" 
                 className="app-logo-icon"
             />
             <h1 className="app-title">Lost & Found Inventory</h1>
           </div>
-          </div>
+        </div>
         
         <div className="header-center">
           <button 
             className="post-item-btn"
             onClick={() => navigate('/upload-item')}
           >
-             Post New Item
+            Post New Item
           </button>
         </div>
         
         <div className="header-right">
           <div className="user-menu">
-            <button className="user-avatar" onClick={() => setShowUserMenu(!showUserMenu)}>
+            <button 
+              className="user-avatar" 
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              title="User Profile"
+            >
               {user?.user_id?.charAt(0).toUpperCase() || 'U'}
             </button>
             
-                            {showUserMenu && (
-                <div className="user-dropdown">
-                    <div className="user-info">
-                    <p className="user-name">{user?.user_id}</p>
-                    <p className="user-email">{user?.email || 'user@example.com'}</p>
-                    </div>
-                    <hr />
-                    <button onClick={() => navigate('/profile')}>
-                     My Profile
-                    </button>
-                    <button onClick={() => navigate('/my-items')}>
-                     My Uploads
-                    </button>
-                    {/*  ADD THIS LINE */}
-                    <button onClick={() => navigate('/messages')}>
-                     Messages
-                    </button>
-                    <button onClick={() => navigate('/settings')}>
-                     Settings
-                    </button>
-                    <hr />
-                    <button onClick={logout} className="logout-btn-dropdown">
-                     Logout
-                    </button>
+            {showUserMenu && (
+              <div className="user-dropdown">
+                <div className="user-info">
+                  <p className="user-name">{user?.user_id}</p>
+                  <p className="user-email">{user?.email || 'user@example.com'}</p>
                 </div>
-                )}
+                <hr />
+                <button onClick={() => {
+                  navigate('/profile');
+                  setShowUserMenu(false);
+                }}>
+                   My Profile
+                </button>
+                <button onClick={() => {
+                  navigate('/my-items');
+                  setShowUserMenu(false);
+                }}>
+                   My Uploads
+                </button>
+                <button onClick={() => {
+                  navigate('/messages');
+                  setShowUserMenu(false);
+                }}>
+                   Messages
+                </button>
+                <button onClick={() => {
+                  navigate('/settings');
+                  setShowUserMenu(false);
+                }}>
+                   Settings
+                </button>
+                <hr />
+                <button 
+                  onClick={() => {
+                    logout();
+                    setShowUserMenu(false);
+                  }} 
+                  className="logout-btn-dropdown"
+                >
+                   Logout
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </header>
 
       {/* Main Content Area */}
-      <div className="item-listing-page">
-        {/* Filter Sidebar */}
-        <aside className="filters-sidebar">
-          <div className="filters-header">
-            <h2>Filters</h2>
-          </div>
-          
-          {/* Search Box */}
-          <div className="filter-section">
-            <label>Search</label>
+      <div className="main-content-wrapper">
+        {/* Search & Filter Bar */}
+        <div className="search-filter-bar">
+          <div className="search-container">
+            <span className="search-icon"></span>
             <input
               type="text"
               placeholder="Search items..."
@@ -199,86 +224,99 @@ const ItemListingPage = () => {
               className="search-input"
             />
           </div>
-          
-          {/* Lost/Found Status */}
-          <div className="filter-section">
-            <label>Status</label>
-            <select
-              value={itemStatus}
-              onChange={(e) => setItemStatus(e.target.value)}
-              className="filter-select"
-            >
-              <option value="all">All Items</option>
-              <option value="lost">Lost</option>
-              <option value="found">Found</option>
-            </select>
-          </div>
-          
-          {/* Item Type */}
-          <div className="filter-section">
-            <label>Item Type</label>
-            <select
-              value={itemType}
-              onChange={(e) => setItemType(e.target.value)}
-              className="filter-select"
-            >
-              <option value="all">All Types</option>
-              <option value="Books">Books</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Clothing">Clothing</option>
-              <option value="Keys">Keys</option>
-              <option value="Others">Others</option>
-            </select>
-          </div>
-          
-          {/* Date Range */}
-          <div className="filter-section">
-            <label>Date From</label>
-            <input
-              type="date"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-              className="date-input"
-            />
-          </div>
-          
-          <div className="filter-section">
-            <label>Date To</label>
-            <input
-              type="date"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-              className="date-input"
-            />
-          </div>
-          
-          {/* Show Claimed Items */}
-          <div className="filter-section">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={showClaimed}
-                onChange={(e) => setShowClaimed(e.target.checked)}
-              />
-              <span>Show Claimed Items</span>
-            </label>
-          </div>
-          
-          {/* Refresh Button */}
-          <button onClick={handleRefresh} className="refresh-btn">
-             Refresh
+
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="filters-toggle-btn"
+          >
+            <span></span>
+            Filters
+            <span className={`chevron-icon ${showFilters ? 'rotated' : ''}`}>▼</span>
           </button>
-        </aside>
-        
-        {/* Items Grid */}
-        <main className="items-main">
-          <div className="items-header">
-            <h1>Recent Listings ({filteredItems.length})</h1>
+        </div>
+
+        {/* Expandable Filters */}
+        {showFilters && (
+          <div className="filters-expanded">
+            <div className="filter-section">
+              <label>Status</label>
+              <select
+                value={itemStatus}
+                onChange={(e) => setItemStatus(e.target.value)}
+                className="filter-select"
+              >
+                <option value="all">All Items</option>
+                <option value="lost">Lost</option>
+                <option value="found">Found</option>
+              </select>
+            </div>
+
+            <div className="filter-section">
+              <label>Item Type</label>
+              <select
+                value={itemType}
+                onChange={(e) => setItemType(e.target.value)}
+                className="filter-select"
+              >
+                <option value="all">All Types</option>
+                <option value="Books">Books</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Keys">Keys</option>
+                <option value="Others">Others</option>
+              </select>
+            </div>
+
+            <div className="filter-section">
+              <label>Date From</label>
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="filter-select"
+              />
+            </div>
+
+            <div className="filter-section">
+              <label>Date To</label>
+              <input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="filter-select"
+              />
+            </div>
+
+            <div className="filter-section checkbox-section">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={showClaimed}
+                  onChange={(e) => setShowClaimed(e.target.checked)}
+                />
+                <span>Show Claimed Items</span>
+              </label>
+            </div>
+
+            <button onClick={handleRefresh} className="refresh-btn">
+              Reset Filters
+            </button>
           </div>
+        )}
+
+        {/* Items Grid */}
+        <div className="items-main">
+          <div className="items-header">
+            <h1>Recent Listings [{filteredItems.length}]</h1>
+          </div>
+
+          {loading && <div className="loading">Loading items...</div>}
+          {error && <div className="error">{error}</div>}
           
-          {loading && <p>Loading items...</p>}
-          {error && <div className="error-message">{error}</div>}
-          
+          {!loading && !error && filteredItems.length === 0 && (
+            <div className="no-items">No items found</div>
+          )}
+
           <div className="items-grid">
             {filteredItems.map((item) => (
               <div
@@ -287,31 +325,55 @@ const ItemListingPage = () => {
                 data-type={item.type}
                 onClick={() => handleItemClick(item.item_id)}
               >
-                {/* Type Badge */}
-                <div className="item-type-badge">{item.type}</div>
-                
-                {/* Image */}
-                {item.img && item.img.length > 0 ? (
-                  <img src={item.img[0].url} alt={item.desc} className="item-image" />
-                ) : (
-                  <div className="no-image">📷 No Image</div>
-                )}
-                
+                {/* Image Section */}
+                <div className="item-image-container">
+                  {item.img && item.img.length > 0 ? (
+                    <img src={item.img[0].url} alt={item.desc} className="item-image" />
+                  ) : (
+                    <div className="no-image">📷 No Image</div>
+                  )}
+                  
+                  {/* Type Badge */}
+                  <div 
+                    className="item-type-badge"
+                    style={{ background: badgeGradients[item.type] || badgeGradients['Others'] }}
+                  >
+                    {item.type}
+                  </div>
+
+                  {/* Claimed Badge */}
+                  {item.is_claimed && (
+                    <div className="claimed-badge">
+                      ✓ Claimed
+                    </div>
+                  )}
+                </div>
+
                 {/* Item Details */}
                 <div className="item-details">
                   <h3>{item.type}</h3>
                   <div className="item-meta">
-                    <p>📍 {item.desc}</p>
-                    <p>📅 {new Date(item.created_at).toLocaleDateString()}</p>
+                    <p>
+                      <span className="meta-icon">📍</span>
+                      {item.desc}
+                    </p>
+                    <p>
+                      <span className="meta-icon">📅</span>
+                      {new Date(item.created_at).toLocaleDateString()}
+                    </p>
                     <p className={item.is_claimed ? 'status-claimed' : 'status-available'}>
-                      {item.is_claimed ? ' Claimed' : ' Available'}
+                      {item.is_claimed ? '● Claimed' : '● Available'}
                     </p>
                   </div>
+
+                  <button className="view-details-btn">
+                    View Details
+                  </button>
                 </div>
               </div>
             ))}
           </div>
-        </main>
+        </div>
       </div>
     </div>
   );

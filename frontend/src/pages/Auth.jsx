@@ -10,7 +10,7 @@ const PASSWORD_TITLE = "Must be at least 8 characters and include 1 uppercase, 1
 
 const AuthPage = () => {
     const navigate = useNavigate();
-    const { isAuthenticated, login } = useAuth();  // Use login function from context
+    const { isAuthenticated, login } = useAuth();
     const [isRegister, setIsRegister] = useState(false);
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
@@ -38,13 +38,14 @@ const AuthPage = () => {
                 passwd: password
             });
 
-            const token = loginResponse.data.token;
+            const { access_token, refresh_token } = loginResponse.data;
             
-            if (token) {
+            if (access_token) {
                 // Step 2: Fetch full user profile with email
                 try {
                     // Set token temporarily for the next request
-                    localStorage.setItem('token', token);
+                    localStorage.setItem("access_token", access_token);
+                    localStorage.setItem("refresh_token", refresh_token);
                     
                     // Fetch user profile
                     const profileResponse = await apiClient.get('/users/me');
@@ -54,13 +55,12 @@ const AuthPage = () => {
                         user_id: profileResponse.data.user_id || userId,
                         email: profileResponse.data.email || null,
                         username: profileResponse.data.username || null,
-                        // Add any other fields from your backend
                     };
                     
                     console.log('Login successful, user data:', userData);
                     
                     // Use login function which saves both token and user
-                    login(userData, token);
+                    login(userData, access_token);
                     
                     navigate('/', { replace: true });
                     
@@ -70,10 +70,10 @@ const AuthPage = () => {
                     // Fallback: If profile fetch fails, still login with basic info
                     const basicUserData = {
                         user_id: userId,
-                        email: email || null  // Use registration email if available
+                        email: email || null
                     };
                     
-                    login(basicUserData, token);
+                    login(basicUserData, access_token);
                     navigate('/', { replace: true });
                 }
             }
@@ -90,15 +90,13 @@ const AuthPage = () => {
         setLoading(true);
         setMessage('');
 
-        // Frontend check for password complexity before sending (as a double-check)
-        // Although the HTML pattern is present, this provides a fallback message.
+        // Frontend check for password complexity
         const passwordRegexTest = new RegExp(STRONG_PASSWORD_REGEX);
         if (!passwordRegexTest.test(password)) {
             setMessage('❌ ' + PASSWORD_TITLE);
             setLoading(false);
             return;
         }
-
 
         try {
             await apiClient.post('/auth/register', {
@@ -108,7 +106,7 @@ const AuthPage = () => {
                 email
             });
             
-            setMessage('Registration successful! Please login.');
+            setMessage('✅ Registration successful! Please login.');
             setIsRegister(false);
             
             // Clear form
@@ -128,6 +126,7 @@ const AuthPage = () => {
     return (
         <div className="auth-container">
             <div className="auth-card">
+                {/* Logo Section */}
                 <div className="auth-logo-container">
                     <img 
                         src="/lotandfoundlogo.jpg" 
@@ -136,14 +135,18 @@ const AuthPage = () => {
                     />
                     <h1 className="auth-title-text">Lost & Found Inventory</h1>
                 </div>
-                <h2>{isRegister ? 'Register' : 'Login'}</h2>
 
+                {/* Heading */}
+                <h2>{isRegister ? 'Create Account' : 'Welcome Back'}</h2>
+
+                {/* Messages */}
                 {message && (
                     <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
                         {message}
                     </div>
                 )}
 
+                {/* Form */}
                 <form onSubmit={isRegister ? handleRegister : handleLogin}>
                     {isRegister && (
                         <>
@@ -156,7 +159,7 @@ const AuthPage = () => {
                             />
                             <input
                                 type="email"
-                                placeholder="Email"
+                                placeholder="Email Address"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -185,19 +188,20 @@ const AuthPage = () => {
                     />
 
                     <button type="submit" disabled={loading}>
-                        {loading ? 'Loading...' : (isRegister ? 'Register' : 'Login')}
+                        {loading ? 'Processing...' : (isRegister ? 'Create Account' : 'Login')}
                     </button>
                 </form>
 
+                {/* Toggle Button */}
                 <button
                     type="button"
                     className="toggle-btn"
                     onClick={() => {
                         setIsRegister(!isRegister);
-                        setMessage('');  // Clear messages when switching
+                        setMessage('');
                     }}
                 >
-                    {isRegister ? 'Have an account? Login' : 'Need an account? Register'}
+                    {isRegister ? '← Back to Login' : 'Create New Account →'}
                 </button>
             </div>
         </div>

@@ -162,84 +162,86 @@ const ItemUploadPage = () => {
     // Show loading while fetching item in edit mode
     if (isEditMode && fetchingItem) {
         return (
-            <div className="upload-container">
-                <p>Loading item data...</p>
+            <div className="upload-page">
+                <p style={{ position: 'relative', zIndex: 10, textAlign: 'center', paddingTop: '100px' }}>Loading item data...</p>
             </div>
         );
     }
 
     return (
-        <div className="upload-container">
-            <h2>{isEditMode ? 'Edit Item' : 'Post a Lost or Found Item'}</h2>
-            <form onSubmit={handleSubmit} encType="multipart/form-data">
-                
-                <textarea
-                    rows="4"
-                    placeholder="Detailed description (color, place found/lost, unique marks)"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    required
-                />
-                
-                <select 
-                    value={itemType} 
-                    onChange={(e) => setItemType(e.target.value)} 
-                    required
-                >
-                    <option value="">Select Item Type</option>
-                    {ITEM_TYPES.map(type => (
-                        <option key={type} value={type}>{type}</option>
-                    ))}
-                </select>
+        <div className="upload-page">
+            <div className="upload-container">
+                <h2>{isEditMode ? 'Edit Item' : 'Post a Lost or Found Item'}</h2>
+                <form onSubmit={handleSubmit} encType="multipart/form-data">
+                    
+                    <textarea
+                        rows="4"
+                        placeholder="Detailed description (color, place found/lost, unique marks)"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        required
+                    />
+                    
+                    <select 
+                        value={itemType} 
+                        onChange={(e) => setItemType(e.target.value)} 
+                        required
+                    >
+                        <option value="">Select Item Type</option>
+                        {ITEM_TYPES.map(type => (
+                            <option key={type} value={type}>{type}</option>
+                        ))}
+                    </select>
 
-                {/* Show existing images in edit mode */}
-                {isEditMode && existingImages.length > 0 && (
-                    <div className="existing-images">
-                        <p><strong>Current Images:</strong></p>
-                        <div className="image-preview-grid">
-                            {existingImages.map((img, index) => (
-                                <img 
-                                    key={index} 
-                                    src={img.url} 
-                                    alt={`Existing ${index + 1}`}
-                                    className="existing-image-preview"
-                                />
+                    {/* Show existing images in edit mode */}
+                    {isEditMode && existingImages.length > 0 && (
+                        <div className="existing-images">
+                            <p><strong>Current Images:</strong></p>
+                            <div className="image-preview-grid">
+                                {existingImages.map((img, index) => (
+                                    <img 
+                                        key={index} 
+                                        src={img.url} 
+                                        alt={`Existing ${index + 1}`}
+                                        className="existing-image-preview"
+                                    />
+                                ))}
+                            </div>
+                            <small>Upload new images to replace current ones</small>
+                        </div>
+                    )}
+
+                    <label htmlFor="file-upload" className="file-upload-label">
+                        {isEditMode ? 'Upload New Images (Max 3, optional)' : 'Upload Images (Max 3)'}
+                    </label>
+                    <input
+                        type="file"
+                        id="file-upload"
+                        multiple
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        required={!isEditMode} // Only required for create mode
+                    />
+                    
+                    {images.length > 0 && <small>{images.length} new file(s) selected.</small>}
+
+                    {/*  FIXED ERROR DISPLAY */}
+                    {errors.length > 0 && (
+                        <div className="error-container">
+                            {errors.map((error, index) => (
+                                <p key={index} className="error-message">{error}</p>
                             ))}
                         </div>
-                        <small>Upload new images to replace current ones</small>
-                    </div>
-                )}
-
-                <label htmlFor="file-upload" className="file-upload-label">
-                    {isEditMode ? 'Upload New Images (Max 3, optional)' : 'Upload Images (Max 3)'}
-                </label>
-                <input
-                    type="file"
-                    id="file-upload"
-                    multiple
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    required={!isEditMode} // Only required for create mode
-                />
-                
-                {images.length > 0 && <small>{images.length} new file(s) selected.</small>}
-
-                {/*  FIXED ERROR DISPLAY */}
-                {errors.length > 0 && (
-                    <div className="error-container">
-                        {errors.map((error, index) => (
-                            <p key={index} className="error-message">{error}</p>
-                        ))}
-                    </div>
-                )}
-                
-                <button type="submit" disabled={loading || (!isEditMode && images.length === 0)}>
-                    {loading ? (isEditMode ? 'Updating...' : 'Uploading...') : (isEditMode ? 'Update Item' : 'Submit Item')}
+                    )}
+                    
+                    <button type="submit" disabled={loading || (!isEditMode && images.length === 0)}>
+                        {loading ? (isEditMode ? 'Updating...' : 'Uploading...') : (isEditMode ? 'Update Item' : 'Submit Item')}
+                    </button>
+                </form>
+                <button onClick={() => navigate(isEditMode ? `/items/${editItemId}` : '/')} className="back-btn">
+                    Cancel
                 </button>
-            </form>
-            <button onClick={() => navigate(isEditMode ? `/items/${editItemId}` : '/')} className="back-btn">
-                Cancel
-            </button>
+            </div>
         </div>
     );
 };

@@ -1,17 +1,164 @@
+/* ===== DYNAMIC BACKGROUND ===== */
+.upload-page::before {
+  content: '';
+  position: fixed;
+  top: -30%;
+  left: -15%;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.35) 0%, rgba(212, 175, 55, 0.15) 30%, transparent 70%);
+  border-radius: 50%;
+  animation: dynamicFloat1 20s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(60px);
+}
+
+.upload-page::after {
+  content: '';
+  position: fixed;
+  bottom: -40%;
+  right: -20%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, rgba(212, 175, 55, 0.12) 35%, transparent 70%);
+  border-radius: 50%;
+  animation: dynamicFloat2 25s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(60px);
+}
+
+.upload-page::before {
+  box-shadow: 
+    400px 300px 100px -80px rgba(212, 175, 55, 0.1),
+    -300px -400px 120px -70px rgba(212, 175, 55, 0.08);
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes dynamicFloat1 {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    filter: blur(60px) brightness(1) opacity(0.8);
+  }
+  10% {
+    transform: translate(200px, 150px) rotate(60deg) scale(1.3);
+    filter: blur(50px) brightness(1.3) opacity(1);
+  }
+  20% {
+    transform: translate(100px, 300px) rotate(120deg) scale(0.9);
+    filter: blur(65px) brightness(0.8) opacity(0.7);
+  }
+  30% {
+    transform: translate(-150px, 200px) rotate(180deg) scale(1.2);
+    filter: blur(55px) brightness(1.2) opacity(0.95);
+  }
+  40% {
+    transform: translate(-200px, -100px) rotate(240deg) scale(1.1);
+    filter: blur(60px) brightness(1.1) opacity(0.85);
+  }
+  50% {
+    transform: translate(-100px, -250px) rotate(300deg) scale(1.4);
+    filter: blur(50px) brightness(1.4) opacity(1);
+  }
+  60% {
+    transform: translate(50px, -150px) rotate(360deg) scale(0.95);
+    filter: blur(65px) brightness(0.9) opacity(0.75);
+  }
+  70% {
+    transform: translate(250px, 50px) rotate(420deg) scale(1.25);
+    filter: blur(55px) brightness(1.25) opacity(0.95);
+  }
+  80% {
+    transform: translate(180px, 180px) rotate(480deg) scale(1);
+    filter: blur(60px) brightness(1) opacity(0.8);
+  }
+  90% {
+    transform: translate(-50px, 150px) rotate(540deg) scale(1.15);
+    filter: blur(58px) brightness(1.15) opacity(0.9);
+  }
+  100% {
+    transform: translate(0, 0) rotate(600deg) scale(1);
+    filter: blur(60px) brightness(1) opacity(0.8);
+  }
+}
+
+@keyframes dynamicFloat2 {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    filter: blur(60px) brightness(1) opacity(0.75);
+  }
+  8% {
+    transform: translate(-180px, 200px) rotate(45deg) scale(1.25);
+    filter: blur(55px) brightness(1.25) opacity(0.95);
+  }
+  16% {
+    transform: translate(220px, 150px) rotate(90deg) scale(0.85);
+    filter: blur(65px) brightness(0.85) opacity(0.65);
+  }
+  24% {
+    transform: translate(150px, -200px) rotate(135deg) scale(1.3);
+    filter: blur(50px) brightness(1.3) opacity(1);
+  }
+  32% {
+    transform: translate(-220px, -180px) rotate(180deg) scale(1.05);
+    filter: blur(60px) brightness(1.05) opacity(0.8);
+  }
+  40% {
+    transform: translate(-150px, 220px) rotate(225deg) scale(1.2);
+    filter: blur(55px) brightness(1.2) opacity(0.9);
+  }
+  48% {
+    transform: translate(180px, 100px) rotate(270deg) scale(0.9);
+    filter: blur(65px) brightness(0.9) opacity(0.7);
+  }
+  56% {
+    transform: translate(200px, -150px) rotate(315deg) scale(1.35);
+    filter: blur(50px) brightness(1.35) opacity(1);
+  }
+  64% {
+    transform: translate(-100px, -220px) rotate(360deg) scale(1);
+    filter: blur(60px) brightness(1) opacity(0.8);
+  }
+  72% {
+    transform: translate(250px, 50px) rotate(405deg) scale(1.18);
+    filter: blur(58px) brightness(1.18) opacity(0.92);
+  }
+  80% {
+    transform: translate(-200px, 150px) rotate(450deg) scale(0.95);
+    filter: blur(62px) brightness(0.95) opacity(0.75);
+  }
+  88% {
+    transform: translate(100px, -100px) rotate(495deg) scale(1.22);
+    filter: blur(56px) brightness(1.22) opacity(0.93);
+  }
+  100% {
+    transform: translate(0, 0) rotate(540deg) scale(1);
+    filter: blur(60px) brightness(1) opacity(0.75);
+  }
+}
+
+/* ===== PAGE STYLES ===== */
+.upload-page {
+  min-height: 100vh;
+  background: #0a0a0a;
+  position: relative;
+  overflow: hidden;
+}
+
 .upload-container {
   max-width: 600px;
   margin: 40px auto;
   padding: 30px;
-  /* Dark form background */
   background: #1f1f1f;
   border-radius: 8px;
-  /* Dark shadow */
   box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  position: relative;
+  z-index: 10;
 }
 
 .upload-container h2 {
   margin-bottom: 30px;
-  /* Gold heading */
   color: #D4AF37;
 }
 
@@ -28,7 +175,6 @@
 .upload-container input[type="date"],
 .upload-container input[type="number"] {
   padding: 12px;
-  /* Dark input styles */
   border: 1px solid #555;
   background: #333333;
   color: #CCCCCC;
@@ -43,14 +189,12 @@
 .upload-container input[type="date"]:focus,
 .upload-container input[type="number"]:focus {
   outline: none;
-  /* Gold focus border and shadow */
   border-color: #D4AF37;
   box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
 }
 
 .file-upload-label {
   font-weight: bold;
-  /* Light label text */
   color: #CCCCCC;
 }
 
@@ -60,7 +204,6 @@
 }
 
 .error-message {
-  /* Error colors remain */
   color: #d32f2f;
   background: #440000;
   padding: 10px;
@@ -69,7 +212,6 @@
 
 .upload-container button {
   padding: 12px;
-  /* Gold button */
   background: #D4AF37;
   color: black;
   border: none;
@@ -80,7 +222,6 @@
 }
 
 .upload-container button:hover:not(:disabled) {
-  /* Darker gold on hover */
   background: #B8941F;
 }
 
@@ -91,12 +232,27 @@
 
 .back-btn {
   margin-top: 15px;
-  /* Dark button for secondary action */
   background: #232323;
-  color: #D4AF37; /* Gold text */
+  color: #D4AF37;
   border: 1px solid #D4AF37;
+  padding: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
 }
 
 .back-btn:hover {
   background: #1A1A1A;
+}
+
+@media (max-width: 768px) {
+  .upload-container {
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .upload-container h2 {
+    font-size: 1.5rem;
+  }
 }

@@ -13,7 +13,7 @@ const apiClient = axios.create({
 // Add token to every request
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token');
     console.log('📤 Sending request with token:', token ? 'Yes' : 'No');
     
     if (token) {
@@ -26,14 +26,16 @@ apiClient.interceptors.request.use(
 
 // Handle 401 - logout user
 apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      console.log('❌ 401 Unauthorized - logging out');
-      localStorage.removeItem('token');
-      window.location.href = '/auth';
+  res => res,
+  async err => {
+    if (err.response?.status === 401) {
+      const refresh = localStorage.getItem("refresh_token");
+      const res = await apiClient.post("/auth/refresh", { refresh_token: refresh });
+      localStorage.setItem("access_token", res.data.access_token);
+      err.config.headers.Authorization = `Bearer ${res.data.access_token}`;
+      return apiClient(err.config);
     }
-    return Promise.reject(error);
+    return Promise.reject(err);
   }
 );
 

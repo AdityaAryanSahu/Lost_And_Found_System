@@ -183,7 +183,7 @@ const ItemDetailPage = () => {
         <button onClick={() => navigate('/items')} className="back-btn">
           ← Back
         </button>
-        <h1>Item Details</h1>
+        <h1 >Item Details</h1>
       </header>
 
       {/* Content */}

@@ -1,14 +1,15 @@
 // src/components/ConversationList.jsx
 import React, { useEffect, useState } from 'react';
 import { getConversations } from '../api/messageService';
-import { useAuth } from '../contexts/AuthContext'; 
+import { useAuth } from '../contexts/AuthContext';
 import './ConversationList.css';
 
 const ConversationList = ({ onSelectConversation, selectedConversationId }) => {
-  const { user } = useAuth(); 
+  const { user } = useAuth();
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -42,12 +43,30 @@ const ConversationList = ({ onSelectConversation, selectedConversationId }) => {
     }
   };
 
-  
-  const getOtherParticipant = (participantIds) => {
-    if (!user || !participantIds) return 'Unknown';
-    const otherId = participantIds.find(id => id !== user.user_id);
+  const getParticipantName = (conv) => {
+    if (!user || !conv.participant_ids) return 'Unknown';
+    const otherId = conv.participant_ids.find(id => id !== user.user_id);
     return otherId ? `User ${otherId.substring(0, 8)}` : 'Unknown';
   };
+
+  const getInitial = (name) => {
+    // For generated names like "User 23090556", just use the first letter + first digit
+    const parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      const second = parts[1];
+      // If second part is a number/ID, just use first letter of first part
+      if (/^\d/.test(second)) return parts[0][0].toUpperCase();
+      return (parts[0][0] + second[0]).toUpperCase();
+    }
+    return name.charAt(0).toUpperCase() || 'U';
+  };
+
+  const filteredConversations = conversations.filter((conv) => {
+    if (!searchQuery.trim()) return true;
+    const name = getParticipantName(conv).toLowerCase();
+    const preview = (conv.last_message_content || '').toLowerCase();
+    return name.includes(searchQuery.toLowerCase()) || preview.includes(searchQuery.toLowerCase());
+  });
 
   if (loading) {
     return (
@@ -56,8 +75,8 @@ const ConversationList = ({ onSelectConversation, selectedConversationId }) => {
           <h2>Messages</h2>
         </div>
         <div className="loading-state">
-          <div className="spinner"></div>
-          <p>Loading conversations...</p>
+          <div className="spinner" />
+          <p>Loading conversations…</p>
         </div>
       </div>
     );
@@ -76,48 +95,73 @@ const ConversationList = ({ onSelectConversation, selectedConversationId }) => {
     );
   }
 
+  const totalUnread = conversations.reduce((sum, c) => sum + (c.unread_count || 0), 0);
+
   return (
     <div className="conversation-list">
+      {/* Header */}
       <div className="conversation-list-header">
         <h2>Messages</h2>
-        <span className="conversation-count">{conversations.length}</span>
+        <span className="conversation-count">
+          {totalUnread > 0 ? `${totalUnread} new` : conversations.length}
+        </span>
       </div>
 
-      {conversations.length === 0 ? (
+      {/* Search */}
+      <div className="search-container">
+        <div className="search-wrapper">
+          <span className="search-icon">⌕</span>
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search conversations…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Conversation items */}
+      {filteredConversations.length === 0 ? (
         <div className="empty-state">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
-          <p>No messages yet</p>
-          <span>Start a conversation by contacting a seller</span>
+          {searchQuery ? (
+            <>
+              <p>No results for "{searchQuery}"</p>
+              <span>Try a different name or message</span>
+            </>
+          ) : (
+            <>
+              <p>No messages yet</p>
+              <span>Start a conversation by contacting a seller</span>
+            </>
+          )}
         </div>
       ) : (
+        <>
         <div className="conversation-items">
-          {conversations.map((conv) => {
-            
-            const otherParticipantId = conv.participant_ids?.find(id => id !== user?.user_id);
-            const participantName = otherParticipantId 
-              ? `User ${otherParticipantId.substring(0, 8)}` 
-              : 'Unknown';
-            
+          {filteredConversations.map((conv) => {
+            const participantName = getParticipantName(conv);
+            const initials = getInitial(participantName);
+            const isActive = selectedConversationId === conv.conversation_id;
+            const isOnline = conv.is_online || false;
+
             return (
               <div
                 key={conv.conversation_id}
-                className={`conversation-item ${selectedConversationId === conv.conversation_id ? 'active' : ''}`}
+                className={`conversation-item ${isActive ? 'active' : ''}`}
                 onClick={() => onSelectConversation(conv.conversation_id, conv)}
               >
                 <div className="conversation-avatar">
-                  <div className="avatar-circle">
-                    {participantName.charAt(5)?.toUpperCase() || 'U'}
-                  </div>
-                  {conv.unread_count > 0 && <div className="online-indicator"></div>}
+                  <div className="avatar-circle">{initials}</div>
+                  {isOnline && <div className="online-indicator" />}
                 </div>
 
                 <div className="conversation-content">
                   <div className="conversation-header">
-                    <h4 className="conversation-name">
-                      {participantName}
-                    </h4>
+                    <h4 className="conversation-name">{participantName}</h4>
                     <span className="conversation-time">
                       {formatDate(conv.last_message_at || conv.created_at)}
                     </span>
@@ -135,6 +179,8 @@ const ConversationList = ({ onSelectConversation, selectedConversationId }) => {
             );
           })}
         </div>
+        <div className="conversation-list-spacer" />
+        </>
       )}
     </div>
   );

@@ -6,7 +6,7 @@ from typing import Optional
 from fastapi import UploadFile, HTTPException, status
 import logging
 
-from app.core.storage import get_minio_client
+from app.core.storage import get_r2_client
 from app.utils.image_processing import img_proc 
 from app.repositories import image_repository
 from app.models.image import Image, ImageModel
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class ImageService:
     
     def __init__(self):
-        self.storage_client = get_minio_client()
+        self.storage_client = get_r2_client()
         self.image_repository = image_repository.ImageRepo()
 
     async def process_and_upload_image(self, file: UploadFile, item_id: str) -> Image:

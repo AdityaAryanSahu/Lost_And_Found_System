@@ -1,14 +1,20 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 
 class AuthSession:
-    def __init__(self, user_id: str, token: str, email: Optional[str] = None):
+    def __init__(
+        self,
+        user_id: str,
+        refresh_token: str,
+        expires_in_days: int = 30,
+        email: Optional[str] = None
+    ):
         self.user_id = user_id
-        self.token = token
+        self.token = refresh_token
         self.email = email
         self.created_at = datetime.utcnow()
-        self.status = 1
-        self.mssg = "Login successful."
+        self.expires_at = self.created_at + timedelta(days=expires_in_days)
+        self.revoked = False
 
     def to_dict(self):
         return {
@@ -16,6 +22,6 @@ class AuthSession:
             "token": self.token,
             "email": self.email,
             "created_at": self.created_at,
-            "status": self.status,
-            "mssg": self.mssg
+            "expires_at": self.expires_at,
+            "revoked": self.revoked
         }

@@ -21,5 +21,6 @@ class LoginResponse(BaseModel):
     user_id:str 
     status:int
     mssg:str
-    token: Optional[str] = None
+    access_token: Optional[str] = None
+    refresh_token: Optional[str] = None
     

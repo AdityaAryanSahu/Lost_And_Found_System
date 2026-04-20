@@ -9,22 +9,21 @@ class Settings(BaseSettings):
     
     # Database - MongoDB
     MONGO_URI: str = os.getenv(
-        "MONGO_URI", 
-        "mongodb://localhost:27017/"
+        "MONGO_URI"
     )
-    DB_NAME: str = os.getenv("DB_NAME", "Lost_and_Found")
+    DB_NAME: str = os.getenv("DB_NAME")
     
     # JWT/Security
     ALGORITHM: str = "HS256"
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "b6718f5b621697e4b10ed7c6187bca24")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
+    SECRET_KEY: str = os.getenv("SECRET_KEY")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 1
     
-    # MinIO Storage (for both dev and production)
-    MINIO_ENDPOINT: str = os.getenv("MINIO_ENDPOINT", "localhost:9000")
-    MINIO_ROOT_USER: str = os.getenv("MINIO_ROOT_USER", "minio_user")
-    MINIO_ROOT_PASSWORD: str = os.getenv("MINIO_ROOT_PASSWORD", "minio_password")
-    MINIO_SECURE: bool = os.getenv("MINIO_SECURE", "False").lower() == "true"
-    MINIO_BUCKET_NAME: str = os.getenv("MINIO_BUCKET_NAME", "lost-and-found")
+    # R2 Storage (for both dev and production)
+    R2_ENDPOINT: str = os.getenv("R2_ENDPOINT")
+    R2_ACCESS_KEY: str = os.getenv("R2_ACCESS_KEY")
+    R2_SECRET_KEY: str = os.getenv("R2_SECRET_KEY")
+    R2_BUCKET_NAME: str = os.getenv("R2_BUCKET_NAME")
+    R2_PUBLIC_URL: str = os.getenv("R2_PUBLIC_URL")
     
     class Config:
         env_file = ".env"

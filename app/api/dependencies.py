@@ -48,7 +48,7 @@ def get_message_repo():
 
 #services
 def get_auth_service():
-    return AuthService(user_repo=get_user_repo())
+    return AuthService(user_repo=get_user_repo(), auth_repo=get_auth_repo())
 
 def get_item_service():
     return ItemService(image_service= get_image_service(), item_repo=get_item_repo(), image_repo=get_image_repo())

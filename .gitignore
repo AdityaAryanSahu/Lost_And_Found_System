@@ -10,4 +10,5 @@ app/rasa_env/
 .env
 .env.local
 .env.*.local
+s3_storage
 
