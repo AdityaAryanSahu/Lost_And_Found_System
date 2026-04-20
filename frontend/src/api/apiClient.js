@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = 'https://lost-and-found-system-6tfa.onrender.com';
 
 const apiClient = axios.create({
   baseURL: API_URL,
