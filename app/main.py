@@ -55,7 +55,6 @@ def create_app() -> FastAPI:
         "http://127.0.0.1:3000",  
         "https://lost-and-found-inventory.onrender.com"    
         ],  
-        allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
