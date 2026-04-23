@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.BACKEND_APP_URL;
+const API_URL = import.meta.env.BACKEND_APP_URL || 'http://localhost:8000';
+
+console.log(API_URL);
 
 const apiClient = axios.create({
   baseURL: API_URL,
@@ -9,7 +11,7 @@ const apiClient = axios.create({
   },
 });
 
-// Add token to every request
+// Add token to every request 
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token');
