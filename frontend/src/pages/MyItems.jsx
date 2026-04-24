@@ -239,16 +239,32 @@ const MyItemsPage = () => {
                       
                       {/* 🚨 UPDATED BUTTONS */}
                       <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
-                        <button className="view-details-btn" style={{ flex: 1 }}>
+                        <button 
+                          className="view-details-btn" 
+                          style={{ flex: 1 }}
+                          onClick={() => navigate(`/items/${item.item_id}`)}
+                        >
                           View Details
                         </button>
-                        <button 
-                          className="view-claims-btn" 
-                          style={{ flex: 1, background: '#d4af37', color: '#000', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
-                          onClick={(e) => handleOpenClaims(e, item)}
-                        >
-                          Review Claims
-                        </button>
+
+                        {/* 🚨 ONLY show Review Claims if the user FOUND the item */}
+                        {item.post_type === 'FOUND' && (
+                          <button 
+                            className="view-claims-btn" 
+                            style={{ 
+                              flex: 1, 
+                              background: '#d4af37', 
+                              color: '#000', 
+                              border: 'none', 
+                              borderRadius: '4px', 
+                              cursor: 'pointer', 
+                              fontWeight: 'bold' 
+                            }}
+                            onClick={(e) => handleOpenClaims(e, item)}
+                          >
+                            Review Claims
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>

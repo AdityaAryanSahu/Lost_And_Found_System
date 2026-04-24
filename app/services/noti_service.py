@@ -81,7 +81,26 @@ class NotificationService:
             return False
         
         subject = f"ACTION REQUIRED: New Claim for Item {item.item_id}"
-        body = f"<p>A new claim has been submitted by user {claimant.user_id} for your item (Type: {item.type}).<br><br>Review the claim details now.</p>"
+        body = f"""
+        <div style="font-family: sans-serif; background-color: #0a0a0a; color: #cccccc; padding: 40px; border-radius: 12px; border: 1px solid #D4AF37;">
+            <h2 style="color: #D4AF37; border-bottom: 1px solid #333; padding-bottom: 10px;">New Claim Submitted</h2>
+            <p style="font-size: 16px;">User <strong>{claimant.user_id}</strong> has submitted a claim for the item you posted.</p>
+            
+            <div style="background: rgba(212, 175, 55, 0.05); padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid rgba(212, 175, 55, 0.2);">
+                <p style="margin: 0; color: #D4AF37;"><strong>Item:</strong> {item.type}</p>
+                <p style="margin: 5px 0 0 0; color: #999;"><strong>Description:</strong> {item.desc[:50]}...</p>
+            </div>
+
+            <p>Please review the justification provided by the claimant to verify ownership.</p>
+            
+            <div style="margin-top: 30px;">
+                <a href="https://lost-and-found-inventory.onrender.com/my-items" 
+                   style="display: inline-block; background: #D4AF37; color: black; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">
+                   Review Claim
+                </a>
+            </div>
+        </div>
+        """
 
         return await self.send_email(poster_email, subject, body)
         
@@ -92,7 +111,26 @@ class NotificationService:
             print("Claimant has no email")
             return False
         
+        accent_color = "#4CAF50" if decision.lower() == "approved" else "#e74c3c"
         subject = f"Claim Update: Item {item.item_id} - {decision}"
-        body = f"<p>Your claim for the item ({item.type}) has been {decision.upper()}.<br>The item is now marked as {decision.upper()}.</p>"
+        body = f"""
+        <div style="font-family: sans-serif; background-color: #0a0a0a; color: #cccccc; padding: 40px; border-radius: 12px; border: 1px solid {accent_color};">
+            <h2 style="color: {accent_color}; border-bottom: 1px solid #333; padding-bottom: 10px;">Claim {decision.upper()}</h2>
+            <p style="font-size: 16px;">The owner has reviewed your claim for the <strong>{item.type}</strong>.</p>
+            
+            <div style="background: rgba(255, 255, 255, 0.03); padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #333;">
+                <p style="margin: 0;">Status: <span style="color: {accent_color}; font-weight: bold;">{decision.upper()}</span></p>
+            </div>
+
+            <p>{"Please coordinate with the owner via messages to arrange a pickup." if decision.lower() == 'approved' else "If you believe this is a mistake, you can try contacting the poster directly."}</p>
+            
+            <div style="margin-top: 30px;">
+                <a href="https://lost-and-found-inventory.onrender.com/messages" 
+                   style="display: inline-block; background: {accent_color}; color: {'white' if decision.lower() != 'approved' else 'black'}; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">
+                   Go to Messages
+                </a>
+            </div>
+        </div>
+        """
 
         return await self.send_email(claimant_email, subject, body)
