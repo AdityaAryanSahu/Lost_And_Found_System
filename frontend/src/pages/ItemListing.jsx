@@ -141,16 +141,37 @@ const ItemListingPage = () => {
           </div>
         </div>
         
+        {/*Search and Filters grouped together in the center */}
         <div className="header-center">
+          <div className="search-filter-bar" style={{ width: '100%', maxWidth: '600px', margin: 0 }}>
+            <div className="search-container" style={{ flex: 1 }}>
+              <input
+                type="text"
+                placeholder="Search items..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+                style={{ width: '100%' }}
+              />
+            </div>
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="filters-toggle-btn"
+            >
+              Filters
+              <span className={`chevron-icon ${showFilters ? 'rotated' : ''}`}>▼</span>
+            </button>
+          </div>
+        </div>
+        
+        <div className="header-right">
           <button 
             className="post-item-btn"
             onClick={() => navigate('/upload-item')}
           >
             Post New Item
           </button>
-        </div>
-        
-        <div className="header-right">
+    
           <div className="user-menu">
             <button 
               className="user-avatar" 
@@ -167,36 +188,21 @@ const ItemListingPage = () => {
                   <p className="user-email">{user?.email || 'user@example.com'}</p>
                 </div>
                 <hr />
-                <button onClick={() => {
-                  navigate('/profile');
-                  setShowUserMenu(false);
-                }}>
+                <button onClick={() => { navigate('/profile'); setShowUserMenu(false); }}>
                    My Profile
                 </button>
-                <button onClick={() => {
-                  navigate('/my-items');
-                  setShowUserMenu(false);
-                }}>
+                <button onClick={() => { navigate('/my-items'); setShowUserMenu(false); }}>
                    My Uploads
                 </button>
-                <button onClick={() => {
-                  navigate('/messages');
-                  setShowUserMenu(false);
-                }}>
+                <button onClick={() => { navigate('/messages'); setShowUserMenu(false); }}>
                    Messages
                 </button>
-                <button onClick={() => {
-                  navigate('/settings');
-                  setShowUserMenu(false);
-                }}>
+                <button onClick={() => { navigate('/settings'); setShowUserMenu(false); }}>
                    Settings
                 </button>
                 <hr />
                 <button 
-                  onClick={() => {
-                    logout();
-                    setShowUserMenu(false);
-                  }} 
+                  onClick={() => { logout(); setShowUserMenu(false); }} 
                   className="logout-btn-dropdown"
                 >
                    Logout
@@ -209,29 +215,7 @@ const ItemListingPage = () => {
 
       {/* Main Content Area */}
       <div className="main-content-wrapper">
-        {/* Search & Filter Bar */}
-        <div className="search-filter-bar">
-          <div className="search-container">
-            <span className="search-icon"></span>
-            <input
-              type="text"
-              placeholder="Search items..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
-          </div>
-
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="filters-toggle-btn"
-          >
-            <span></span>
-            Filters
-            <span className={`chevron-icon ${showFilters ? 'rotated' : ''}`}>▼</span>
-          </button>
-        </div>
-
+        
         {/* Expandable Filters */}
         {showFilters && (
           <div className="filters-expanded">

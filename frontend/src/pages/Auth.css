@@ -290,3 +290,23 @@ body {
         font-size: 0.9rem;
     }
 }
+
+.interactive-spotlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Crucial: Lets you click the login form THROUGH the light */
+    z-index: 2; /* Sits behind the card (z-index 10) but above the base background */
+    
+    /* Uses the dynamic CSS variables we update in React */
+    background: radial-gradient(
+        600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(212, 175, 55, 0.15), /* Your signature gold */
+        transparent 40%
+    );
+    
+    /* Adds a tiny bit of smoothness to the mouse tracking */
+    transition: background 0.1s ease; 
+}

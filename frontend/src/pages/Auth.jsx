@@ -26,6 +26,19 @@ const AuthPage = () => {
         }
     }, [isAuthenticated, navigate]);
 
+    const handleMouseMove = (e) => {
+        const { currentTarget, clientX, clientY } = e;
+        const rect = currentTarget.getBoundingClientRect();
+        
+        // Calculate mouse position relative to the container
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+        
+        // Set CSS variables dynamically without causing React re-renders
+        currentTarget.style.setProperty('--mouse-x', `${x}px`);
+        currentTarget.style.setProperty('--mouse-y', `${y}px`);
+    };
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -129,7 +142,8 @@ const AuthPage = () => {
     };
 
     return (
-        <div className="auth-container">
+        <div className="auth-container" onMouseMove={handleMouseMove}>
+            <div className="interactive-spotlight"></div>
             <div className="auth-card">
                 {/* Logo Section */}
                 <div className="auth-logo-container">
