@@ -136,9 +136,9 @@ npm run build   # For production
  [GitHub](https://github.com/AdityaAryanSahu)
 
 **Lakshya Agarwal**
- [GitHub](https://github.com/AdityaAryanSahu)
+ [GitHub](https://github.com/LuckyMan22-SuperMan)
 
 **Sheldon Rodricks**
- [GitHub](https://github.com/AdityaAryanSahu)
+ [GitHub](https://github.com/SheldonRodricks)
 
 ---
