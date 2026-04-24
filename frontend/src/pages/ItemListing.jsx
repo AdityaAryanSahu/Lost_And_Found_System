@@ -81,7 +81,7 @@ const ItemListingPage = () => {
     // Lost/Found status filter
     if (itemStatus !== 'all') {
       filtered = filtered.filter(item => 
-        item.desc?.toLowerCase().includes(itemStatus)
+        item.post_type?.toLowerCase().includes(itemStatus)
       );
     }
     
@@ -122,11 +122,8 @@ const ItemListingPage = () => {
   };
 
   const badgeGradients = {
-    'Books': 'linear-gradient(135deg, #A77E2A 0%, #D4AF37 100%)',
-    'Electronics': 'linear-gradient(135deg, #1C7ED6 0%, #00f2fe 100%)',
-    'Clothing': 'linear-gradient(135deg, #D32F2F 0%, #FF5722 100%)',
-    'Keys': 'linear-gradient(135deg, #5D4037 0%, #8D6E63 100%)',
-    'Others': 'linear-gradient(135deg, #7B1FA2 0%, #9C27B0 100%)',
+    'LOST': 'linear-gradient(135deg, #1C7ED6 0%, #00f2fe 100%)',
+    'FOUND': 'linear-gradient(135deg, #D32F2F 0%, #FF5722 100%)'
   };
 
   return (
@@ -294,7 +291,7 @@ const ItemListingPage = () => {
                   checked={showClaimed}
                   onChange={(e) => setShowClaimed(e.target.checked)}
                 />
-                <span>Show Claimed Items</span>
+                <span> Show Claimed Items</span>
               </label>
             </div>
 
@@ -309,6 +306,40 @@ const ItemListingPage = () => {
           <div className="items-header">
             <h1>Recent Listings [{filteredItems.length}]</h1>
           </div>
+          <div className="match-banner" style={{
+              background: 'linear-gradient(135deg, #1f1f1f 0%, #2a2a2a 100%)',
+              border: '1px solid #d4af37',
+              borderRadius: '10px',
+              padding: '20px',
+              marginBottom: '30px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+            }}>
+              <div>
+                <h3 style={{ margin: '0 0 10px 0', color: '#d4af37' }}>Can't find what you're looking for?</h3>
+                <p style={{ margin: 0, color: '#ccc' }}>Use our advance matching engine to scan descriptions and locations instantly.</p>
+              </div>
+              <button 
+                onClick={() => navigate('/match')}
+                style={{
+                  padding: '12px 24px',
+                  background: '#d4af37',
+                  color: 'black',
+                  fontWeight: 'bold',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '16px',
+                  transition: 'transform 0.2s'
+                }}
+                onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                Try Smart Match 
+              </button>
+            </div>
 
           {loading && <div className="loading">Loading items...</div>}
           {error && <div className="error">{error}</div>}
@@ -336,9 +367,9 @@ const ItemListingPage = () => {
                   {/* Type Badge */}
                   <div 
                     className="item-type-badge"
-                    style={{ background: badgeGradients[item.type] || badgeGradients['Others'] }}
+                    style={{ background: badgeGradients[item.post_type] || badgeGradients['Others'] }}
                   >
-                    {item.type}
+                    {item.post_type}
                   </div>
 
                   {/* Claimed Badge */}

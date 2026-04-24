@@ -18,6 +18,7 @@ class MatchSearchRequest(BaseModel):
     search_type: str  
     keywords: List[str] #from desc
     location: str 
+    post_type: str
 
 class MatchResponse(BaseModel):
     matched_item: ItemResponse

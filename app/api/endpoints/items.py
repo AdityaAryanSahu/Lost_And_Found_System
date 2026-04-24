@@ -1,9 +1,10 @@
 from typing import Optional, Annotated, List
-from fastapi import FastAPI, Depends, HTTPException, status, APIRouter, File, UploadFile, Form
+from fastapi import FastAPI, Depends, HTTPException, status, APIRouter, File, UploadFile, Form, BackgroundTasks
 from app.models.item import ItemCreation, ItemList, ItemResponse
 from app.models.user import UserResponse
-from app.api.dependencies import get_item_service, get_current_user
+from app.api.dependencies import get_item_service, get_current_user, get_match_service
 from app.services.item_service import ItemService
+from app.services.match_service import MatchService
 import json
 import logging
 
@@ -15,8 +16,10 @@ item_router = APIRouter()
 async def item_create(
     item_json: Annotated[str, Form(description="Item details in JSON format")],
     image_files: Annotated[List[UploadFile], File(description="One or more image files for the item")],
-    service: Annotated[ItemService, Depends(get_item_service)],
-    current_user: Annotated[UserResponse, Depends(get_current_user)]
+    background_tasks: BackgroundTasks,
+    item_service: Annotated[ItemService, Depends(get_item_service)],
+    current_user: Annotated[UserResponse, Depends(get_current_user)],
+    match_service: Annotated[MatchService, Depends(get_match_service)]
 ):
     try:
         item_cr = ItemCreation(**json.loads(item_json))
@@ -27,8 +30,11 @@ async def item_create(
         )
     
     item_cr.user_id = current_user.user_id
+    
+    
     try:
-        item_md = await service.create_item(item_cr, image_files)
+        item_md = await item_service.create_item(item_cr, image_files)
+        background_tasks.add_task(match_service.run_automated_matching, item_md.item_id)
         return item_md
     except Exception as e:
         raise HTTPException(
@@ -81,7 +87,7 @@ async def item_update(
             detail="NULL id value"
         )
     
-    # Parse JSON from form data
+
     try:
         item_data = ItemCreation(**json.loads(item_json))
     except (json.JSONDecodeError, ValueError) as e:
@@ -90,7 +96,6 @@ async def item_update(
             detail=f"Invalid Item details JSON: {e}"
         )
     
-    # Get existing item to check ownership
     existing_item = await service.get_item_id(item_id)
     if existing_item is None:
         raise HTTPException(
@@ -98,20 +103,20 @@ async def item_update(
             detail="Item not found"
         )
     
-    # Check if user owns this item
+   
     if existing_item.user_id != current_user.user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You can only edit your own items"
         )
     
-    # Update item
+  
     try:
         if image_files and len(image_files) > 0:
-            # Update with new images
+           
             item_res = await service.update_item_with_images(item_id, item_data, image_files)
         else:
-            # Update without changing images
+            
             item_res = await service.update_item(item_id, item_data)
         
         if item_res is None:

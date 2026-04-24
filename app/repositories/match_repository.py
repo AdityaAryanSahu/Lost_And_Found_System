@@ -14,20 +14,35 @@ class MatchRepo:
         collection = db["matches"]
         return await collection.find().skip(offset).limit(limit).to_list(length=limit)
 
-    async def get_match_by_item(self,item_id: str):
-        db=get_db()
+    async def get_match_by_item(self, item_id: str):
+        db = get_db()
         collection = db["matches"]
-        return await collection.find_one({"item_id": item_id})
+        return await collection.find_one({
+            "$or": [
+                {"item_id_a": item_id},
+                {"item_id_b": item_id}
+            ]
+        })
 
-    async def delete_match(self,item_id: str):
-        db=get_db()
+    async def delete_match(self, item_id: str):
+        db = get_db()
         collection = db["matches"]
-        return await collection.delete_one({"item_id": item_id})
+        return await collection.delete_many({
+            "$or": [
+                {"item_id_a": item_id},
+                {"item_id_b": item_id}
+            ]
+        })
     
-    async def update_match_fields(self,item_id: str, update_data: dict):
-        db=get_db()
+    async def update_match_fields(self, item_id: str, update_data: dict):
+        db = get_db()
         collection = db["matches"]
-        return await collection.update_one(
-            {"item_id": item_id},
+        return await collection.update_many(
+            {
+                "$or": [
+                    {"item_id_a": item_id},
+                    {"item_id_b": item_id}
+                ]
+            },
             {"$set": update_data}
         )

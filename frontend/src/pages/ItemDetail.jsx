@@ -19,7 +19,6 @@ const ItemDetailPage = () => {
   const [submittingClaim, setSubmittingClaim] = useState(false);
 
   useEffect(() => {
-    // Check if user is logged in
     if (!user) {
       navigate('/auth');
       return;
@@ -40,9 +39,8 @@ const ItemDetailPage = () => {
   };
 
   const handleContactSeller = async () => {
-    // Add null checks
     if (!user) {
-      alert("Please log in to contact the seller");
+      alert("Please log in to contact the poster");
       navigate('/auth');
       return;
     }
@@ -65,8 +63,6 @@ const ItemDetailPage = () => {
         content: `Hi! I'm interested in your ${item.type}: "${item.desc}". Is it still available?`,
         item_id: item.item_id
       };
-
-      console.log('Sending message:', payload); // Debug log
 
       await apiClient.post('/messages/send', payload);
       navigate('/messages');
@@ -101,21 +97,20 @@ const ItemDetailPage = () => {
     setSubmittingClaim(true);
 
     try {
-
+      // 1. Submit claim to claims database
       const claimPayload = {
         item_id: String(item.item_id),
         user_id: String(user.user_id),
         justification: String(claimDetails),
       };
-      // Note the trailing slash to prevent FastAPI 307 Redirects!
       await apiClient.post('/claims/', claimPayload);
       
+      // 2. Send direct message to the finder
       const payload = {
         receiver_id: item.user_id,
         content: `I'd like to claim this ${item.type} "${item.desc}". Details: ${claimDetails}`,
         item_id: item.item_id
       };
-
       await apiClient.post('/messages/send', payload);
       
       alert('Claim request sent successfully!');
@@ -130,9 +125,13 @@ const ItemDetailPage = () => {
     }
   };
 
-  // NEW: Mark as Claimed Handler
   const handleMarkAsClaimed = async () => {
-    if (!window.confirm('Mark this item as claimed? This will hide it from search results.')) {
+    // Dynamic confirmation message
+    const confirmMsg = item.post_type === 'LOST' 
+      ? 'Mark this item as recovered? This will hide it from search results.' 
+      : 'Mark this item as claimed? This will hide it from search results.';
+
+    if (!window.confirm(confirmMsg)) {
       return;
     }
 
@@ -141,16 +140,16 @@ const ItemDetailPage = () => {
         is_claimed: true
       });
       
-      alert('Item marked as claimed successfully!');
-      fetchItemDetails(); // Refresh the item data
+      // Dynamic success alert
+      alert(`Item marked as ${item.post_type === 'LOST' ? 'recovered' : 'claimed'} successfully!`);
+      fetchItemDetails(); 
     } catch (err) {
-      console.error('Error marking item as claimed:', err);
-      const errorMsg = err.response?.data?.detail || 'Failed to mark item as claimed';
+      console.error('Error updating item status:', err);
+      const errorMsg = err.response?.data?.detail || 'Failed to update item status';
       alert(`Error: ${errorMsg}`);
     }
   };
 
-  // Early returns with null checks
   if (!user) {
     return (
       <div className="item-detail-page">
@@ -192,7 +191,7 @@ const ItemDetailPage = () => {
         <button onClick={() => navigate('/items')} className="back-btn">
           ← Back
         </button>
-        <h1 >Item Details</h1>
+        <h1>Item Details</h1>
       </header>
 
       {/* Content */}
@@ -208,7 +207,14 @@ const ItemDetailPage = () => {
 
         {/* Info Section */}
         <div className="detail-info-section">
-          <div className="item-type-badge-large">{item.type}</div>
+          <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+            {/* Dynamic Lost/Found Badge */}
+            <div className="item-type-badge-large">
+              {item.post_type === 'LOST' ? ' LOST' : ' FOUND'}
+            </div>
+            <div className="item-type-badge-large">{item.type}</div>
+          </div>
+          
           <h2>{item.desc}</h2>
           
           <div className="detail-meta">
@@ -217,7 +223,7 @@ const ItemDetailPage = () => {
             <p>
               <strong>Status:</strong>
               <span className={item.is_claimed ? 'status-claimed-text' : 'status-available-text'}>
-                {item.is_claimed ? ' Claimed' : ' Available'}
+                {item.is_claimed ? (item.post_type === 'LOST' ? ' Recovered' : ' Claimed') : ' Available'}
               </span>
             </p>
           </div>
@@ -226,30 +232,27 @@ const ItemDetailPage = () => {
           {!isOwnItem ? (
             <div className="action-buttons">
               {!item.is_claimed && (
-                <>
-                  <button 
-                    onClick={handleContactSeller}
-                    className="contact-btn"
-                    disabled={sendingMessage}
-                  >
-                    {sendingMessage ? ' Starting...' : ' Contact Seller'}
+                <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+                  <button onClick={handleContactSeller} className="contact-btn">
+                    Contact Poster
                   </button>
-                  <button 
-                    onClick={() => setShowClaimModal(true)}
-                    className="claim-btn"
-                  >
-                     Claim This Item
-                  </button>
-                </>
+                  
+                  {/* ONLY show the Claim button if the poster FOUND the item */}
+                  {item.post_type === 'FOUND' && (
+                    <button onClick={() => setShowClaimModal(true)} className="claim-btn">
+                      Claim This Item
+                    </button>
+                  )}
+                </div>
               )}
               {item.is_claimed && (
                 <div className="claimed-banner">
-                   This item has been claimed
+                   This item has been {item.post_type === 'LOST' ? 'recovered' : 'claimed'}
                 </div>
               )}
             </div>
           ) : (
-            //  OWNER SECTION WITH MARK AS CLAIMED
+            // OWNER SECTION
             <div className="own-item-notice">
               <p> This is your post</p>
               <div className="owner-action-buttons">
@@ -260,19 +263,18 @@ const ItemDetailPage = () => {
                    Edit Item
                 </button>
                 
-                {/*  MARK AS CLAIMED BUTTON */}
                 {!item.is_claimed && (
                   <button 
                     className="mark-claimed-btn"
                     onClick={handleMarkAsClaimed}
                   >
-                     Mark as Claimed
+                     {item.post_type === 'LOST' ? 'Mark as Recovered' : 'Mark as Claimed'}
                   </button>
                 )}
                 
                 {item.is_claimed && (
                   <span className="already-claimed-badge">
-                     Already Claimed
+                     {item.post_type === 'LOST' ? 'Already Recovered' : 'Already Claimed'}
                   </span>
                 )}
               </div>
@@ -286,7 +288,7 @@ const ItemDetailPage = () => {
         <div className="modal-overlay" onClick={() => setShowClaimModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2>Claim This Item</h2>
-            <p>Provide details about how you lost or found this item to claim it:</p>
+            <p>Provide details about how you lost this item to proceed:</p>
             
             <form onSubmit={handleClaimSubmit}>
               <textarea

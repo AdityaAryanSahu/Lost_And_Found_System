@@ -276,6 +276,10 @@
 .contact-btn,
 .claim-btn,
 .edit-btn {
+  flex: 1; 
+  display: flex;
+  justify-content: center; /* Keeps text in the middle */
+  align-items: center;
   padding: 14px 28px;
   border: none;
   border-radius: 8px;
@@ -438,6 +442,15 @@
   margin-top: 15px;
   flex-wrap: wrap;
 }
+
+.owner-action-buttons > * {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 
 .mark-claimed-btn {
   padding: 12px 24px;

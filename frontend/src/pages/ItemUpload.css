@@ -256,3 +256,23 @@
     font-size: 1.5rem;
   }
 }
+
+.post-type-selector {
+  display: flex;
+  gap: 30px; /* 🚨 This is the magic line that separates the two options */
+  margin-bottom: 20px; 
+}
+
+.post-type-selector label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: #CCCCCC;
+}
+
+.post-type-selector input[type="radio"] {
+  margin-right: 8px; /* 🚨 Adds a nice little gap between the circle and the text */
+  cursor: pointer;
+  transform: scale(1.2); /* Optional: makes the radio button slightly bigger and easier to click */
+}

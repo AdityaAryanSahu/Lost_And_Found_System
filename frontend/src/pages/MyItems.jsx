@@ -16,6 +16,7 @@ const MyItemsPage = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [claims, setClaims] = useState([]);
   const [loadingClaims, setLoadingClaims] = useState(false);
+  const [automatedMatches, setAutomatedMatches] = useState({});
 
   useEffect(() => {
     if (!user) {
@@ -33,6 +34,24 @@ const MyItemsPage = () => {
         item => item.user_id === user.user_id
       );
       setMyItems(userItems);
+      const matchDict = {};
+      
+      // We use Promise.all to fetch matches for all items simultaneously without freezing the UI
+      await Promise.all(userItems.map(async (item) => {
+        if (!item.is_claimed) {
+          try {
+            const matchRes = await apiClient.get(`/matches/saved/${item.item_id}`);
+            if (matchRes.data && matchRes.data.has_match) {
+              matchDict[item.item_id] = matchRes.data.match_data;
+            }
+          } catch (err) {
+            // It might return a 404 if no match is found, which is totally fine. Just ignore it.
+            console.log(`No matches for item ${item.item_id}`);
+          }
+        }
+      }));
+
+      setAutomatedMatches(matchDict);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -160,6 +179,55 @@ const MyItemsPage = () => {
                     </div>
 
                     <div className="item-details">
+                      {automatedMatches[item.item_id] && !item.is_claimed && (
+                        <div 
+                          style={{
+                            background: 'rgba(220, 53, 69, 0.06)',
+                            border: '1px solid rgba(220, 53, 69, 0.25)',
+                            padding: '12px 16px',
+                            borderRadius: '8px',
+                            marginBottom: '15px',
+                            cursor: 'pointer',
+                            textAlign: 'center', /* 🚨 Centers the whole block */
+                            transition: 'all 0.2s ease',
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.background = 'rgba(220, 53, 69, 0.12)';
+                            e.currentTarget.style.borderColor = 'rgba(220, 53, 69, 0.4)';
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.background = 'rgba(220, 53, 69, 0.06)';
+                            e.currentTarget.style.borderColor = 'rgba(220, 53, 69, 0.25)';
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const matchData = automatedMatches[item.item_id];
+                            const otherItemId = matchData.item_id_a === item.item_id ? matchData.item_id_b : matchData.item_id_a;
+                            navigate(`/items/${otherItemId}`);
+                          }}
+                        >
+                          <div>
+                            <strong style={{ 
+                              display: 'block', /* 🚨 Forces it to take the full width so it centers */
+                            color: '#e86c77', 
+                            fontSize: '13px', 
+                            letterSpacing: '1px', 
+                            textTransform: 'uppercase', 
+                            }}>
+                              ✧ Potential Match
+                            </strong>
+                            <div style={{ display: 'flex',
+                              flexDirection: 'column', /* 🚨 This stacks the text vertically */
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              textAlign: 'center',
+                              fontSize: '13px', marginTop: '6px', color: '#a0a0a0' }}>
+                              A {Math.round(automatedMatches[item.item_id].score * 100)}% match was found
+                            </div>
+                          </div>
+                          <span style={{ fontSize: '18px', color: '#e86c77', fontWeight: '300' }}></span>
+                        </div>
+                      )}
                       <h3>{item.type}</h3>
                       <div className="item-meta">
                         <p><span className="meta-icon">📍</span>{item.desc}</p>

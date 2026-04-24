@@ -15,7 +15,7 @@ const ItemUploadPage = () => {
     // Check if we're in edit mode
     const editItemId = searchParams.get('edit');
     const isEditMode = !!editItemId;
-    
+    const [postType, setPostType] = useState('');
     const [description, setDescription] = useState('');
     const [itemType, setItemType] = useState('');
     const [images, setImages] = useState([]);
@@ -82,6 +82,10 @@ const ItemUploadPage = () => {
             return;
         }
 
+        if(!postType){
+            setErrors(["Please select a post type"]);
+            return;
+        }
         // For create mode, require at least one image
         // For edit mode, allow no new images if existing images exist
         if (!isEditMode && images.length === 0) {
@@ -95,6 +99,7 @@ const ItemUploadPage = () => {
             const itemDetails = {
                 user_id: user.user_id,
                 desc: description,
+                post_type: postType, 
                 type: itemType,
             };
 
@@ -173,7 +178,26 @@ const ItemUploadPage = () => {
             <div className="upload-container">
                 <h2>{isEditMode ? 'Edit Item' : 'Post a Lost or Found Item'}</h2>
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
-                    
+                    <div className="post-type-selector">
+                        <label>
+                            <input 
+                            type="radio" 
+                            value="LOST" 
+                            checked={postType === 'LOST'} 
+                            onChange={(e) => setPostType(e.target.value)} 
+                            />
+                            I Lost This Item
+                        </label>
+                        <label>
+                            <input 
+                            type="radio" 
+                            value="FOUND" 
+                            checked={postType === 'FOUND'} 
+                            onChange={(e) => setPostType(e.target.value)} 
+                            />
+                            I Found This Item
+                        </label>
+                        </div>
                     <textarea
                         rows="4"
                         placeholder="Detailed description (color, place found/lost, unique marks)"
