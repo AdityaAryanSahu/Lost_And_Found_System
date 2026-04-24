@@ -9,6 +9,7 @@ import ProfilePage from './pages/Profile';
 import MyItemsPage from './pages/MyItems';
 import SettingsPage from './pages/Settings';
 import MessagingPage from './pages/MessagingPage';
+import MatchPage from './pages/MatchPage';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -37,7 +38,7 @@ function AppRoutes() {
       <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       <Route path="/my-items" element={<ProtectedRoute><MyItemsPage /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-      
+      <Route path="/match" element={<ProtectedRoute><MatchPage /></ProtectedRoute>} />
       <Route path="/messages" element={<ProtectedRoute><MessagingPage /></ProtectedRoute>} />
       
       {/* Catch-all - MUST BE LAST */}

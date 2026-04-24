@@ -101,6 +101,15 @@ const ItemDetailPage = () => {
     setSubmittingClaim(true);
 
     try {
+
+      const claimPayload = {
+        item_id: String(item.item_id),
+        user_id: String(user.user_id),
+        justification: String(claimDetails),
+      };
+      // Note the trailing slash to prevent FastAPI 307 Redirects!
+      await apiClient.post('/claims/', claimPayload);
+      
       const payload = {
         receiver_id: item.user_id,
         content: `I'd like to claim this ${item.type} "${item.desc}". Details: ${claimDetails}`,

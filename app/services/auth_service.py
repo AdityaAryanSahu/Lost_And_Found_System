@@ -3,12 +3,13 @@ from datetime import datetime, timedelta
 from app.models.user import UserCreation, UserResponse, UserModel 
 from app.models.auth import LoginRequest, LoginResponse, AuthSessionModel
 from app.core import security
-from app.repositories import user_repository, auth_repository
+from app.repositories.auth_repository import AuthRepo
+from  app.repositories.user_repository import UserRepo
 from fastapi import status, Depends, HTTPException
 
 class AuthService:
     
-    def __init__(self, user_repo: user_repository, auth_repo: auth_repository):
+    def __init__(self, user_repo: UserRepo, auth_repo: AuthRepo):
         self.user_repository = user_repo
         self.auth_repository= auth_repo
         

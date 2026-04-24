@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     R2_BUCKET_NAME: str = os.getenv("R2_BUCKET_NAME")
     R2_PUBLIC_URL: str = os.getenv("R2_PUBLIC_URL")
     
+    
+    RESEND_API_KEY: str = os.getenv("RESEND_API_KEY")
+    
     class Config:
         env_file = ".env"
 

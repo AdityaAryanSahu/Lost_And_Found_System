@@ -4,23 +4,25 @@ from app.models.claim import ClaimCreation, ClaimResponse, ClaimModel
 from app.models.user import UserResponse, UserModel
 from app.services.item_service import ItemService
 from app.services.noti_service import NotificationService 
-from app.repositories import user_repository, claim_repository
+from app.repositories.claim_repository import ClaimRepo
+from app.repositories.user_repository import UserRepo
 from fastapi import Depends, HTTPException, status
 import uuid
+from fastapi import BackgroundTasks
 
 
 class ClaimService:
     def __init__(self,
                  item_service: Annotated[ItemService, Depends()],
                  noti_service: Annotated[NotificationService, Depends()],
-                 claim_repo: claim_repository,
-                 user_repo: user_repository): # For fetching claimant data
+                 claim_repo: ClaimRepo,
+                 user_repo: UserRepo): # For fetching claimant data
         self.item_service = item_service
         self.notification_service = noti_service
         self.claim_repository = claim_repo
         self.user_repository = user_repo
         
-    async def claim_submit(self, claim_data: ClaimCreation, user_id: str) -> Optional[ClaimResponse]:
+    async def claim_submit(self, claim_data: ClaimCreation, user_id: str, background_tasks: BackgroundTasks) -> ClaimResponse:
         
         item=await self.item_service.get_item_id(claim_data.item_id)
         
@@ -41,23 +43,35 @@ class ClaimService:
         new_claim_id = str(uuid.uuid4())
         claim_model = claim_data.to_model(claim_id=new_claim_id, submitted_at=datetime.now())
         claim_model.user_id = user_id
+        print(claim_model)
         await self.claim_repository.create_claim(claim_model)
         claimant_doc = await self.user_repository.get_user_by_id(user_id)
         if claimant_doc:
              claimant = UserResponse.from_model(UserModel(**claimant_doc))
-             await self.notification_service.notify_item_poster_of_claim(item=item, claimant=claimant)
+             background_tasks.add_task(
+                self.notification_service.notify_item_poster_of_claim,
+                item,
+                claimant
+                )
+             print("background task worked")
+        else: 
+            print(f"no emial sent")
       
         return ClaimResponse.from_model(claim_model)
     
     async def get_claims_item_id(self, item_id:str) -> List[ClaimResponse]:
         claim_docs = await self.claim_repository.get_claims_for_item(item_id)
-        claims = [ClaimResponse.from_model(ClaimModel(**doc)) for doc in claim_docs]
+        claims = []
+        for doc in claim_docs:
+            doc["_id"] = str(doc["_id"])  
+            claims.append(ClaimResponse.from_model(ClaimModel(**doc)))
+    
         return claims
     
     async def review_claim(self, claim_id: str, current_user_id: str, action: str) -> ClaimResponse:
         
         claim_doc = await self.claim_repository.get_claim_by_id(claim_id)
-        
+        claim_doc["_id"] = str(claim_doc["_id"]) 
         if not claim_doc:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Claim not found.")
             
@@ -90,7 +104,12 @@ class ClaimService:
             await self.notification_service.notify_claimant_of_decision(claimant, item_res, action)
             
     
-        return await self.get_claim_by_id(claim_id)
+        claim_doc = await self.claim_repository.get_claim_by_id(claim_id)
+        claim_doc["_id"] = str(claim_doc["_id"])
+        claim_model = ClaimModel(**claim_doc)
+        
+        return ClaimResponse.from_model(claim_model)
+         
     
     
         

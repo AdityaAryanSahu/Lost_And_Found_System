@@ -32,10 +32,15 @@ const AuthPage = () => {
         setMessage('');
 
         try {
-            // Step 1: Login and get token
-            const loginResponse = await apiClient.post('/auth/login', {
-                user_id: userId,
-                passwd: password
+
+            const formData = new URLSearchParams();
+            formData.append('username', userId);
+            formData.append('password', password);
+
+            const loginResponse = await apiClient.post('/auth/login', formData, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
             });
 
             const { access_token, refresh_token } = loginResponse.data;

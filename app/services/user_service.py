@@ -1,11 +1,11 @@
 from typing import Optional, Dict, Annotated
 from app.models.user import UserCreation,UserResponse, UserModel 
-from app.repositories import user_repository
+from app.repositories.user_repository import UserRepo
 from fastapi import Depends
 
 
 class UserService:
-    def __init__(self, user_repo: user_repository):
+    def __init__(self, user_repo: UserRepo):
         self.user_repository = user_repo
         
     async def get_user_by_id(self, user_id: int) -> Optional[UserResponse]:

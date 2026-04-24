@@ -4,6 +4,7 @@ from app.models.claim import ClaimCreation, ClaimResponse
 from app.models.user import UserCreation, UserResponse
 from app.services.claim_service import ClaimService
 from app.api.dependencies import get_claim_service, get_current_user
+from fastapi import BackgroundTasks
 
 
 claim_router=APIRouter()
@@ -11,11 +12,13 @@ claim_router=APIRouter()
 @claim_router.post("/", response_model=ClaimResponse)
 async def submit_claim(
     claim_data: ClaimCreation, service: Annotated[ClaimService, Depends(get_claim_service)],
-    current_user: Annotated[UserResponse, Depends(get_current_user)]
+    current_user: Annotated[UserResponse, Depends(get_current_user)],
+    background_tasks: BackgroundTasks
 ):
-    claim_res = await service.submit_claim(
+    claim_res = await service.claim_submit(
         claim_data=claim_data, 
-        user_id=current_user.user_id
+        user_id=current_user.user_id,
+        background_tasks=background_tasks
     )
     
     if claim_res.status == "Failed":

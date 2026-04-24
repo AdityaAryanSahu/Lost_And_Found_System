@@ -21,7 +21,8 @@ class MatchSearchRequest(BaseModel):
 
 class MatchResponse(BaseModel):
     matched_item: ItemResponse
-    item_id: str
+    item_id: Optional[str] = None
+    score: float
     mssg:str
     
 class MatchList(BaseModel):

@@ -54,7 +54,7 @@ def get_item_service():
     return ItemService(image_service= get_image_service(), item_repo=get_item_repo(), image_repo=get_image_repo())
 
 def get_claim_service():
-    return ClaimService(item_service=get_item_service(), noti_service=NotificationService(),claim_repo=get_claim_repo(), user_repo=get_user_repo())
+    return ClaimService(item_service=get_item_service(), noti_service=NotificationService(get_user_repo()),claim_repo=get_claim_repo(), user_repo=get_user_repo())
 
 def get_match_service():
     return MatchService(item_service=get_item_service(), match_repo=get_match_repo())

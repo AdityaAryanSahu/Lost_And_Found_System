@@ -11,14 +11,14 @@ class MatchService:
     
     def __init__(self,
                  item_service: Annotated[ItemService, Depends()],
-                 match_repo: match_repository):
+                 match_repo: match_repository.MatchRepo):
         self.item_service = item_service
         self.match_repository = match_repo
         
     async def find_potential_matches(self, search_request: MatchSearchRequest) -> MatchList:
         
         all_items_list = await self.item_service.get_all_items(limit=1000, offset=0)
-        all_items = all_items_list.items 
+        all_items = all_items_list.item_list
         potential_matches: List[MatchResponse] = []
 
         search_keywords = {k.lower() for k in search_request.keywords}
@@ -56,6 +56,7 @@ class MatchService:
                 potential_matches.append(
                     MatchResponse(
                         matched_item=item,
+                        item_id=item.item_id,
                         score=round(score, 2),
                         mssg=f"Score {round(score*100)}%. Reasons: {'; '.join(reasons)}"
                     )

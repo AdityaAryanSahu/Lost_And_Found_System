@@ -9,33 +9,44 @@ const ClaimForm = ({ item_id, item_poster_id, onSuccess, onError }) => {
     const [justification, setJustification] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
+
+        console.log("🚨 BUTTON CLICKED! handleSubmit started."); // Add this!
         e.preventDefault();
+        
+        console.log("Current user state:", user); // Check if user exists
+        console.log("Current item_id prop:", item_id);
         setLoading(true);
         onError(null);
 
-        if (!user) {
+        if (!user || !user.user_id) {
             onError("You must be logged in to submit a claim.");
             setLoading(false);
             return;
         }
 
-        try {
-            const payload = {
-                item_id: item_id,
-                user_id: user.user_id, // The ID of the claimant (current user)
-                justification: justification,
-            };
+        // 1. Force everything to a String to perfectly match your ClaimCreation model
+        const payload = {
+            item_id: String(item_id),
+            user_id: String(user.user_id), 
+            justification: String(justification),
+        };
 
-            await apiClient.post('/claims', payload);
+        // 2. Log exactly what Axios is about to send
+        console.log("📤 Sending Claim Payload:", payload);
+
+        try {
+            // 3. Add the trailing slash to prevent FastAPI 307 Redirects dropping the body
+            await apiClient.post('/claims/', payload);
             
             setLoading(false);
-            onSuccess(); // Notify parent component (ItemDetailPage)
+            onSuccess(); 
             
         } catch (error) {
-            console.error("Claim submission failed:", error.response?.data);
+            // 4. Print the EXACT validation error from Pydantic
+            console.error("❌ Claim submission failed. FastAPI says:", error.response?.data);
             const detail = error.response?.data?.detail || "Failed to submit claim. Item may be gone.";
-            onError(detail);
+            onError(typeof detail === 'string' ? detail : JSON.stringify(detail));
             setLoading(false);
         }
     };
@@ -45,7 +56,7 @@ const ClaimForm = ({ item_id, item_poster_id, onSuccess, onError }) => {
             <h3>Submit Claim for This Item</h3>
             <p>Please provide detailed justification proving the item is yours. This information will be sent to the item poster (User {item_poster_id}).</p>
             
-            <form onSubmit={handleSubmit}>
+            <form>
                 <textarea
                     rows="4"
                     placeholder="Describe specific features, time/place of loss, or any unique marks only the owner would know."
@@ -53,7 +64,9 @@ const ClaimForm = ({ item_id, item_poster_id, onSuccess, onError }) => {
                     onChange={(e) => setJustification(e.target.value)}
                     required
                 />
-                <button type="submit" disabled={loading}>
+                <button type="button" 
+                    onClick={handleSubmit} 
+                    disabled={loading}>
                     {loading ? 'Submitting...' : 'Confirm Claim'}
                 </button>
             </form>

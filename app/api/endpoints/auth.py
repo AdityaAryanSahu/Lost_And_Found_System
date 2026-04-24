@@ -4,6 +4,7 @@ from app.models.auth import LoginRequest, LoginResponse
 from app.models.user import UserCreation, UserResponse
 from app.services.auth_service import AuthService
 from app.api.dependencies import get_auth_service
+from fastapi.security import OAuth2PasswordRequestForm
 
 auth_router = APIRouter()
 
@@ -17,7 +18,12 @@ async def register(user_in: UserCreation, service: Annotated[AuthService, Depend
     return new_user
 
 @auth_router.post("/login", response_model=LoginResponse)
-async def login(user_in:LoginRequest, service: Annotated[AuthService, Depends(get_auth_service)]):
+async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], service: Annotated[AuthService, Depends(get_auth_service)]):
+    user_in = LoginRequest(
+        user_id=form_data.username,
+        passwd=form_data.password
+    )
+    
     verification = await service.verify_user(user_in)
     if verification.status != status.HTTP_200_OK :
         raise HTTPException(status_code=verification.status, detail=verification.mssg)
