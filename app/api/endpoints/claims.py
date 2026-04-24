@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter, HTTPException, status, Depends
 from typing import Optional, Annotated, List
-from app.models.claim import ClaimCreation, ClaimResponse
+from app.models.claim import ClaimCreation, ClaimResponse, PinVerification
 from app.models.user import UserCreation, UserResponse
 from app.services.claim_service import ClaimService
 from app.api.dependencies import get_claim_service, get_current_user
@@ -29,6 +29,13 @@ async def submit_claim(
         
     return claim_res
 
+@claim_router.get("/my-claims")
+async def get_my_claims(
+    current_user: Annotated[UserResponse, Depends(get_current_user)],
+    claim_service: Annotated[ClaimService, Depends(get_claim_service)]
+):
+    return await claim_service.get_claims_by_user_id(current_user.user_id)
+
 @claim_router.get("/item/{item_id}", response_model=List[ClaimResponse])
 async def all_claims( item_id: str,
     service: Annotated[ClaimService, Depends(get_claim_service)],
@@ -50,3 +57,11 @@ async def claim_review(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=claim.mssg)
     return claim
 
+@claim_router.post("/{claim_id}/verify-pin")
+async def verify_pin(
+    claim_id: str, 
+    payload: PinVerification, 
+    claim_service: Annotated[ClaimService, Depends(get_claim_service)],
+    current_user: Annotated[UserResponse, Depends(get_current_user)]
+):
+    return await claim_service.verify_handoff_pin(claim_id, current_user.user_id, payload.pin)

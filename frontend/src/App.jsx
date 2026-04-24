@@ -10,6 +10,7 @@ import MyItemsPage from './pages/MyItems';
 import SettingsPage from './pages/Settings';
 import MessagingPage from './pages/MessagingPage';
 import MatchPage from './pages/MatchPage';
+import MyClaimsPage from './pages/MyClaimsPage';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -40,7 +41,11 @@ function AppRoutes() {
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
       <Route path="/match" element={<ProtectedRoute><MatchPage /></ProtectedRoute>} />
       <Route path="/messages" element={<ProtectedRoute><MessagingPage /></ProtectedRoute>} />
-      
+      <Route path="/my-claims" element={
+            <ProtectedRoute>
+              <MyClaimsPage />
+            </ProtectedRoute>
+          } />
       {/* Catch-all - MUST BE LAST */}
       <Route path="*" element={<Navigate to="/items" replace />} />
     </Routes>

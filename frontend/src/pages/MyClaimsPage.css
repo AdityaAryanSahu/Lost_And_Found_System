@@ -1,0 +1,220 @@
+/* =========================================
+   🚨 MY CLAIMS PAGE STYLES 🚨 
+   ========================================= */
+/* =========================================
+   🌌 PREMIUM BACKGROUND WRAPPER
+   ========================================= */
+.my-claims-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+    position: relative;
+    overflow-x: hidden;
+    padding-bottom: 50px;
+}
+
+/* Floating Gold Orbs */
+/* =========================================
+   🌌 PREMIUM DYNAMIC BACKGROUND
+   ========================================= */
+.my-claims-page {
+    min-height: 100vh;
+    background: #0a0a0a;
+    position: relative;
+    overflow: hidden;
+    padding: 40px 20px; /* Merged your padding/margin here */
+}
+
+/* Ensure the text and cards sit ABOVE the floating background */
+.my-claims-header, 
+.claims-list,
+.no-claims-text {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+    margin: 0 auto; /* Centers the content */
+}
+
+/* 🚨 The Exact Floating Orbs from MyItems */
+.my-claims-page::before {
+    content: '';
+    position: fixed;
+    top: -30%;
+    left: -15%;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.35) 0%, rgba(212, 175, 55, 0.15) 30%, transparent 70%);
+    border-radius: 50%;
+    animation: dynamicFloat1 20s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(60px);
+    box-shadow: 400px 300px 100px -80px rgba(212, 175, 55, 0.1), -300px -400px 120px -70px rgba(212, 175, 55, 0.08);
+}
+
+.my-claims-page::after {
+    content: '';
+    position: fixed;
+    bottom: -40%;
+    right: -20%;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, rgba(212, 175, 55, 0.12) 35%, transparent 70%);
+    border-radius: 50%;
+    animation: dynamicFloat2 25s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(60px);
+}
+
+.my-claims-page {
+    position: relative;
+    z-index: 10; 
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    color: #ffffff;
+    min-height: 80vh;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.my-claims-header {
+    color: #d4af37;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    padding-bottom: 15px;
+}
+
+.claims-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* The Claim Card - Matches your existing Glassmorphism style */
+.claim-card {
+    background: rgba(30, 30, 30, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.claim-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    border-color: rgba(212, 175, 55, 0.2);
+}
+
+.claim-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.claim-card-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #e0e0e0;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.status-approve {
+    background: rgba(76, 175, 80, 0.15);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.status-reject {
+    background: rgba(244, 67, 54, 0.15);
+    color: #F44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.status-pending {
+    background: rgba(255, 152, 0, 0.15);
+    color: #FF9800;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.claim-justification {
+    color: #a0a0a0;
+    font-style: italic;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 3px solid #555;
+    margin-bottom: 20px;
+}
+
+/* 🚨 The Secure PIN Box 🚨 */
+.secure-pin-box {
+    margin-top: 25px;
+    padding: 25px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(212, 175, 55, 0.15) 100%);
+    border: 1px dashed rgba(212, 175, 55, 0.5);
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.05);
+}
+
+.secure-pin-box p {
+    margin: 0 0 10px 0;
+    color: #cccccc;
+    font-size: 14px;
+}
+
+.pin-display {
+    font-size: 48px;
+    letter-spacing: 12px;
+    margin: 0;
+    color: #d4af37;
+    font-family: monospace;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+    animation: goldPulse 2s infinite;
+}
+
+@keyframes goldPulse {
+    0% { text-shadow: 0 0 10px rgba(212, 175, 55, 0.4); }
+    50% { text-shadow: 0 0 25px rgba(212, 175, 55, 0.8); }
+    100% { text-shadow: 0 0 10px rgba(212, 175, 55, 0.4); }
+}
+
+.returned-banner {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: #4CAF50;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.no-claims-text {
+    text-align: center;
+    color: #888;
+    margin-top: 40px;
+    font-size: 1.1rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

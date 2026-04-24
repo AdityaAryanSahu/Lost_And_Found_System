@@ -97,7 +97,7 @@ const AuthPage = () => {
             }
         } catch (error) {
             console.error('Login error:', error);
-            setMessage('❌ ' + (error.response?.data?.detail || 'Login failed'));
+            setMessage('❌ ' + ('Login failed'));
         } finally {
             setLoading(false);
         }
@@ -124,7 +124,7 @@ const AuthPage = () => {
                 email
             });
             
-            setMessage('✅ Registration successful! Please login.');
+            setMessage(' Registration successful! Please login.');
             setIsRegister(false);
             
             // Clear form
@@ -135,7 +135,7 @@ const AuthPage = () => {
             
         } catch (error) {
             console.error('Registration error:', error);
-            setMessage('❌ ' + (error.response?.data?.detail || 'Registration failed'));
+            setMessage('❌ ' + ('Registration failed'));
         } finally {
             setLoading(false);
         }

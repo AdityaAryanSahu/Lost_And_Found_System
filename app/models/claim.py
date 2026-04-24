@@ -13,6 +13,8 @@ class ClaimModel(BaseModel):
     justification: str
     status: str = "PENDING"
     submitted_at: datetime
+    handoff_pin: Optional[str] = None
+    is_returned: bool = False
     
     def to_dict(self) -> Dict[str, Any]:
         return self.model_dump(by_alias=True, exclude_none=True)
@@ -29,6 +31,9 @@ class ClaimCreation(BaseModel):
             justification=self.justification,
             submitted_at=submitted_at
         )
+
+class PinVerification(BaseModel):
+    pin: str
     
 class ClaimResponse(BaseModel):
     item_id:str
@@ -38,6 +43,9 @@ class ClaimResponse(BaseModel):
     mssg:str
     status:str
     submitted_at: datetime
+    handoff_pin: Optional[str] = None
+    is_returned: bool = False
+    
     @classmethod
     def from_model(cls, claim_model: ClaimModel) -> 'ClaimResponse':
         return cls(
@@ -47,5 +55,7 @@ class ClaimResponse(BaseModel):
             justification=claim_model.justification,
             mssg= "successfully data retreived",
             status=claim_model.status,
-            submitted_at=claim_model.submitted_at
+            submitted_at=claim_model.submitted_at,
+            handoff_pin=claim_model.handoff_pin,
+            is_returned=claim_model.is_returned
         )

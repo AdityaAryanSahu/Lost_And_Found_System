@@ -9,6 +9,7 @@ from app.repositories.user_repository import UserRepo
 from fastapi import Depends, HTTPException, status
 import uuid
 from fastapi import BackgroundTasks
+import random
 
 
 class ClaimService:
@@ -92,6 +93,8 @@ class ClaimService:
         update_data = {"status": action, "mssg": f"Claim {action.lower()}."}
         
         if action == "APPROVE":
+            secure_pin = str(random.randint(1000, 9999))
+            update_data["handoff_pin"] = secure_pin 
             await self.item_service.mark_item_claimed(claim_model.item_id)
             
        
@@ -109,6 +112,33 @@ class ClaimService:
         claim_model = ClaimModel(**claim_doc)
         
         return ClaimResponse.from_model(claim_model)
+    
+    async def get_claims_by_user_id(self, user_id: str) -> List[ClaimResponse]:
+        claim_docs = await self.claim_repository.get_claims_by_user(user_id)
+        claims = []
+        for doc in claim_docs:
+            doc["_id"] = str(doc["_id"])  
+            claims.append(ClaimResponse.from_model(ClaimModel(**doc)))
+        return claims
+    
+    async def verify_handoff_pin(self, claim_id: str, current_user_id: str, pin: str):
+        claim_doc = await self.claim_repository.get_claim_by_id(claim_id)
+        if not claim_doc:
+            raise HTTPException(status_code=404, detail="Claim not found")
+
+        item_res = await self.item_service.get_item_id(claim_doc["item_id"])
+        if not item_res or item_res.user_id != current_user_id:
+            raise HTTPException(status_code=403, detail="Not authorized to verify this pin.")
+
+        if claim_doc.get("is_returned"):
+            raise HTTPException(status_code=400, detail="Item has already been returned.")
+
+        if claim_doc.get("handoff_pin") != pin:
+            raise HTTPException(status_code=400, detail="Invalid PIN. Please check with the owner and try again.")
+
+        await self.claim_repository.update_claim_fields(claim_id, {"is_returned": True})
+
+        return {"status": "SUCCESS", "mssg": "Handoff complete! Item successfully returned."}
          
     
     

@@ -107,6 +107,33 @@ const MyItemsPage = () => {
     }
   };
 
+  const handleVerifyPin = async (claimId) => {
+    // Grab the value from the input field
+    const pinElement = document.getElementById(`pin-input-${claimId}`);
+    const pinValue = pinElement?.value?.trim();
+
+    if (!pinValue || pinValue.length !== 4) {
+      alert("Please enter a valid 4-digit PIN.");
+      return;
+    }
+
+    try {
+      // Call the new backend endpoint
+      await apiClient.post(`/claims/${claimId}/verify-pin`, { pin: pinValue });
+      alert(' Handoff complete! Item successfully returned.');
+      
+      // Instantly update the UI to show it's returned without reloading
+      setClaims(prev => prev.map(c => 
+        c.claim_id === claimId ? { ...c, is_returned: true } : c
+      ));
+      
+    } catch (err) {
+      console.error('Error verifying PIN:', err);
+      const errorMsg = err.response?.data?.detail || 'Failed to verify PIN';
+      alert(`❌ Error: ${errorMsg}`);
+    }
+  };
+
   if (!user) return null;
 
   return (
@@ -271,41 +298,87 @@ const MyItemsPage = () => {
               <p style={{ color: '#aaa', textAlign: 'center', padding: '20px 0' }}>No claims have been submitted for this item yet.</p>
             ) : (
               <div className="claims-list" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                {claims.map((claim) => (
-                  <div key={claim.claim_id} style={{ padding: '15px', border: '1px solid #444', borderRadius: '8px', background: '#333' }}>
-                    <p><strong>Claimant ID:</strong> User {claim.user_id}</p>
-                    <p><strong>Submitted:</strong> {new Date(claim.submitted_at).toLocaleDateString()}</p>
-                    <p style={{ margin: '10px 0', padding: '10px', background: '#222', borderRadius: '4px' }}>
-                      <em>"{claim.justification}"</em>
-                    </p>
-                    <p>
-                      <strong>Status: </strong> 
-                      <span style={{ 
-                        color: claim.status === 'APPROVE' ? '#4CAF50' : claim.status === 'REJECT' ? '#F44336' : '#FF9800',
-                        fontWeight: 'bold' 
-                      }}>
-                        {claim.status}
-                      </span>
-                    </p>
-                    
-                    {claim.status === 'PENDING' && !selectedItem.is_claimed && (
-                      <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
-                        <button 
-                          onClick={() => handleReviewClaim(claim.claim_id, 'APPROVE')} 
-                          style={{ flex: 1, background: '#4CAF50', color: 'white', padding: '10px', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}
-                        >
-                          Approve
-                        </button>
-                        <button 
-                          onClick={() => handleReviewClaim(claim.claim_id, 'REJECT')}
-                          style={{ flex: 1, background: '#F44336', color: 'white', padding: '10px', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ))}
+               {claims.map((claim) => (
+                    <div key={claim.claim_id} style={{ padding: '15px', border: '1px solid #444', borderRadius: '8px', background: '#333' }}>
+                      <p><strong>Claimant ID:</strong> User {claim.user_id}</p>
+                      <p><strong>Submitted:</strong> {new Date(claim.submitted_at).toLocaleDateString()}</p>
+                      <p style={{ margin: '10px 0', padding: '10px', background: '#222', borderRadius: '4px' }}>
+                        <em>"{claim.justification}"</em>
+                      </p>
+                      <p>
+                        <strong>Status: </strong> 
+                        <span style={{ 
+                          color: claim.status === 'APPROVE' ? '#4CAF50' : claim.status === 'REJECT' ? '#F44336' : '#FF9800',
+                          fontWeight: 'bold' 
+                        }}>
+                          {claim.status}
+                        </span>
+                      </p>
+                      
+                      {/* 1. APPROVE / REJECT BUTTONS (Only show if PENDING) */}
+                      {claim.status === 'PENDING' && !selectedItem.is_claimed && (
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
+                          <button 
+                            onClick={() => handleReviewClaim(claim.claim_id, 'APPROVE')} 
+                            style={{ flex: 1, background: '#4CAF50', color: 'white', padding: '10px', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}
+                          >
+                            Approve
+                          </button>
+                          <button 
+                            onClick={() => handleReviewClaim(claim.claim_id, 'REJECT')}
+                            style={{ flex: 1, background: '#F44336', color: 'white', padding: '10px', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      )}
+
+                      {/* 🚨 2. SECURE HANDOFF PIN INPUT (Only show to the Finder if claim is APPROVED but not yet returned) */}
+                      {claim.status === 'APPROVE' && !claim.is_returned && (
+                        <div style={{ marginTop: '15px', padding: '15px', background: 'rgba(212, 175, 55, 0.05)', border: '1px solid rgba(212, 175, 55, 0.3)', borderRadius: '6px' }}>
+                          <p style={{ margin: '0 0 10px 0', color: '#ccc', fontSize: '14px' }}>
+                             To complete the return, enter the 4-digit PIN provided by the owner when you meet up:
+                          </p>
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <input 
+                              type="text" 
+                              id={`pin-input-${claim.claim_id}`}
+                              maxLength="4" 
+                              placeholder="PIN" 
+                              style={{ 
+                                flex: 1, padding: '10px', background: '#1a1a1a', border: '1px solid #555', 
+                                color: '#d4af37', borderRadius: '4px', textAlign: 'center', fontSize: '20px', 
+                                letterSpacing: '4px', fontWeight: 'bold' 
+                              }}
+                            />
+                            <button 
+                              onClick={() => handleVerifyPin(claim.claim_id)}
+                              style={{ 
+                                background: '#d4af37', color: 'black', border: 'none', padding: '0 20px', 
+                                borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', transition: 'all 0.2s' 
+                              }}
+                              onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+                              onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+                            >
+                              Verify & Close
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 🚨 3. SUCCESS BANNER (Show when PIN matches and item is returned) */}
+                      {claim.is_returned && (
+                        <div style={{ 
+                          marginTop: '15px', padding: '12px', background: 'rgba(76, 175, 80, 0.15)', 
+                          border: '1px solid rgba(76, 175, 80, 0.4)', color: '#4CAF50', 
+                          textAlign: 'center', borderRadius: '6px', fontWeight: 'bold' 
+                        }}>
+                           Item Successfully Returned!
+                        </div>
+                      )}
+
+                    </div>
+                  ))}
               </div>
             )}
           </div>

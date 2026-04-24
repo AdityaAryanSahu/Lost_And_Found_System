@@ -194,6 +194,9 @@ const ItemListingPage = () => {
                 <button onClick={() => { navigate('/my-items'); setShowUserMenu(false); }}>
                    My Uploads
                 </button>
+                <button onClick={() => { navigate('/my-claims'); setShowUserMenu(false); }}>
+                  Track My Claims
+                  </button>
                 <button onClick={() => { navigate('/messages'); setShowUserMenu(false); }}>
                    Messages
                 </button>

@@ -38,3 +38,7 @@ class ClaimRepo:
         {"claim_id": claim_id},
         {"$set": update_data}
     )
+    async def get_claims_by_user(self, user_id: str, limit: int = 50):
+        db=get_db()
+        collection = db["claims"]
+        return await collection.find({"user_id": user_id}).to_list(length=limit)
