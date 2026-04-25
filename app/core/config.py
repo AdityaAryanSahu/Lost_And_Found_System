@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     
     
     RESEND_API_KEY: str = os.getenv("RESEND_API_KEY")
+    MAIL_USERNAME: str
+    MAIL_PASSWORD: str 
     
     class Config:
         env_file = ".env"

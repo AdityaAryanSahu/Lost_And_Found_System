@@ -1,30 +1,53 @@
 from app.models.user import UserResponse
 from app.models.item import ItemResponse
 from app.repositories.user_repository import UserRepo
-import resend
+import smtplib
+import asyncio
 import os
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from app.core.config import settings
 
-resend.api_key = settings.RESEND_API_KEY
+
 
 class NotificationService:
     def __init__(self, user_repo: UserRepo):
         self.user_repository = user_repo
+        self.sender_email = settings.MAIL_USERNAME
+        self.sender_password = settings.MAIL_PASSWORD
+        
+        
+    def _sync_send_email(self, msg, recipient_email: str):
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls() # Secure the connection
+        # Removed the password print statement!
+        server.login(self.sender_email, self.sender_password)
+        server.sendmail(
+        self.sender_email,
+        recipient_email,
+        msg.as_string() 
+    )
+        server.quit()
     
     async def send_email(self, recipient_email: str, subject: str, body: str) -> bool:
+        if not self.sender_email or not self.sender_password:
+            print(" Email credentials missing. Skipping email.")
+            return
+
+        # Build the email package
+        msg = MIMEMultipart()
+        msg['From'] = self.sender_email
+        msg['To'] = recipient_email
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'html'))
+
         try:
-            print(f"Sending email to {recipient_email}")
-
-            resend.Emails.send({
-                "from": "Lost & Found <onboarding@resend.dev>",
-                "to": [recipient_email],
-                "subject": subject,
-                "html": body
-            })
-            return True
-
+            # 🚨 Run the blocking SMTP code in a background thread!
+            await asyncio.to_thread(self._sync_send_email, msg, recipient_email)
+            print(f"Successfully sent email to {recipient_email}")
+            return True # 🚨 Added explicit return
         except Exception as e:
-            print("Email error:", e)
+            print(f"Failed to send email: {e}")
             return False
         
         
