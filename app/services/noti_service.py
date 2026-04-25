@@ -19,8 +19,7 @@ class NotificationService:
         
     def _sync_send_email(self, msg, recipient_email: str):
         server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls() # Secure the connection
-        # Removed the password print statement!
+        server.starttls() 
         server.login(self.sender_email, self.sender_password)
         server.sendmail(
         self.sender_email,
@@ -34,18 +33,16 @@ class NotificationService:
             print(" Email credentials missing. Skipping email.")
             return
 
-        # Build the email package
         msg = MIMEMultipart()
-        msg['From'] = self.sender_email
+        msg['From'] = f"Lost & Found Inventory <{self.sender_email}>"
         msg['To'] = recipient_email
         msg['Subject'] = subject
         msg.attach(MIMEText(body, 'html'))
 
         try:
-            # 🚨 Run the blocking SMTP code in a background thread!
             await asyncio.to_thread(self._sync_send_email, msg, recipient_email)
             print(f"Successfully sent email to {recipient_email}")
-            return True # 🚨 Added explicit return
+            return True
         except Exception as e:
             print(f"Failed to send email: {e}")
             return False
